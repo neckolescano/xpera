@@ -41,7 +41,7 @@ namespace Xpera.Screens
                 StatStrip.Make("Accounts", rows.Count.ToString(), "who can sign in"),
                 StatStrip.Make("Cashiers", Count("Cashier").ToString(), "record sales and payments"),
                 StatStrip.Make("Staff", Count("Staff").ToString(), "handle customer care"),
-                StatStrip.Make("Locked", locked.ToString(), locked == 0 ? "no one is locked out" : "after 3 wrong passwords", locked > 0));
+                StatStrip.Make("Locked", locked.ToString(), locked == 0 ? "no one is locked out" : "can't sign in until unlocked", locked > 0));
         }
 
         // Every record, in order. The list shows one page of these at a time.

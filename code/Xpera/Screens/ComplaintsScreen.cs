@@ -40,7 +40,7 @@ namespace Xpera.Screens
             stats.SetTiles(
                 StatStrip.Make("Open", Count("Open").ToString(), "need a reply", Count("Open") > 0),
                 StatStrip.Make("In progress", Count("In progress").ToString(), "being fixed"),
-                StatStrip.Make("Resolved", Count("Resolved").ToString(), "of " + rows.Count + " concerns"),
+                StatStrip.Make("Resolved", Count("Resolved").ToString(), "of " + rows.Count + (rows.Count == 1 ? " concern" : " concerns")),
                 StatStrip.Make("Warranty claims", rows.Count(r => Convert.ToString(r.Cells[3]) == "Warranty claim").ToString(), "parts sent back"));
         }
 
