@@ -1,0 +1,14 @@
+Guide builder (copied from Claude's temporary folder on 2026-11-17 so it is not lost)
+
+These scripts rebuild the two Word guides in the docs folder:
+  make.js    -> "xpera Lab 1 - Presentation Guide.docx"
+  make2.js   -> "xpera - Project Structure and Migrations Guide.docx"
+               (uses the .part files and the code pictures in code\ and code2\)
+  codepics.py / codepics2.py -> render the code pictures (code\ = Pictures 1-21, code2\ = Pictures 22-31)
+  topdf.ps1  -> turns a .docx into a PDF with Word
+
+To run again (needs Node.js; run "npm install" here once to get the docx package):
+  node make.js  "..\xpera Lab 1 - Presentation Guide.docx"
+  node make2.js "..\xpera - Project Structure and Migrations Guide.docx"
+
+No real passwords are in this folder (sample-cloud.json only has ********).

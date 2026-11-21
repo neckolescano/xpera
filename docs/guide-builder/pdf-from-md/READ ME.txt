@@ -1,0 +1,4 @@
+Turns a Markdown file in docs into a styled A4 PDF (Inter font, xpera colors).
+1. pip install markdown
+2. python topdf.py "..\..\presentation-pitch-nov19.md" out.html
+3. "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless=new --no-pdf-header-footer --print-to-pdf="C:\full\path\out.pdf" "file:///C:/full/path/out.html"

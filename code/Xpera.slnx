@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Xpera.api/Xpera.api.csproj" Id="3679426f-b110-4141-9865-eb27d7662e16" />
+  <Project Path="Xpera.domain/Xpera.domain.csproj" Id="7693c6bb-dbb8-413e-8c57-dde070977748" />
+  <Project Path="Xpera.infrastructure/Xpera.infrastructure.csproj" Id="43686061-2082-41bb-acfa-9d56f1e60871" />
+  <Project Path="Xpera/Xpera.csproj" />
+</Solution>

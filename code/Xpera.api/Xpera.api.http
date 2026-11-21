@@ -1,0 +1,128 @@
+# Try the API from Visual Studio: start Xpera.api, then click "Send request" above a line.
+# The sign-in uses the sample test accounts from the SQL scripts (password xpera123).
+# No store code: the username alone tells the Master which store it is (owner = PixelZone,
+# arcade.owner = Arcade Supply, hub.owner = Gaming Hub).
+@host = http://localhost:5274
+
+GET {{host}}/api/me
+X-Username: owner
+X-Password: xpera123
+
+###
+
+GET {{host}}/api/customers
+X-Username: cashier01
+X-Password: xpera123
+
+###
+
+GET {{host}}/api/products
+X-Username: staff01
+X-Password: xpera123
+
+###
+
+POST {{host}}/api/feedback
+X-Username: staff01
+X-Password: xpera123
+Content-Type: application/json
+
+{ "customerId": 1, "rating": 5, "comment": "Fast build, clean cables." }
+
+###
+
+###
+
+POST {{host}}/companies
+Content-Type: application/json
+
+{
+  "companyCode": "TEST01",
+  "companyName": "Test Store",
+  "isActive": true,
+  "createdAt": "2026-11-14T09:15:00"
+}
+
+###
+
+POST {{host}}/devices
+Content-Type: application/json
+
+{
+  "companyId": 1,
+  "deviceCode": "DEV001",
+  "deviceName": "Counter 1",
+  "isActive": true,
+  "createdAt": "2026-11-14T09:50:00"
+}
+
+###
+
+POST {{host}}/company-databases
+Content-Type: application/json
+
+{
+  "companyId": 4,
+  "serverName": "(localdb)\\MSSQLLocalDB",
+  "databaseName": "Xpera_TenantD",
+  "isActive": true
+}
+
+  ###
+
+GET {{host}}/test-tenant/1
+Accept: application/json
+
+###
+
+GET {{host}}/tenant/1/products
+Accept: application/json
+
+###
+
+POST {{host}}/tenant/2/products
+Content-Type: application/json
+
+{
+  "name": "Test Mouse",
+  "category": "Peripherals",
+  "price": 1500,
+  "isAvailable": true
+}
+
+###
+
+GET {{host}}/tenant/2/products
+Accept: application/json
+
+###
+
+POST {{host}}/tenant/1/customers
+Content-Type: application/json
+
+{
+  "fullName": "Juan Dela Cruz",
+  "contact": "09171234567",
+  "usuallyBuys": "Graphics cards"
+}
+
+###
+
+GET {{host}}/tenant/1/customers
+Accept: application/json
+
+###
+
+POST {{host}}/tenant/3/customers
+Content-Type: application/json
+
+{
+  "fullName": "Maria Santos",
+  "contact": "09181234567",
+  "usuallyBuys": "Keyboards"
+}
+
+###
+
+GET {{host}}/tenant/3/customers
+Accept: application/json

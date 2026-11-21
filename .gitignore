@@ -1,0 +1,19 @@
+# Build output and Visual Studio's own files
+bin/
+obj/
+.vs/
+*.user
+*.suo
+node_modules/
+
+# Real passwords: never on GitHub
+# (code/Xpera.api/appsettings.example.json is the same file with ******** instead of passwords)
+code/Xpera.api/appsettings.json
+docs/MONSTER CREDENTIALS 4 DB.txt
+docs/old/SQLQuery4.sql
+*credentials*.txt
+cloud.json
+databases.txt
+
+# Office lock files
+~$*

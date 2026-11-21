@@ -1,0 +1,177 @@
+// ---------- 7. Reading the code (picture + explanation) ----------
+const SIZES = JSON.parse(fs.readFileSync(__dirname + '/code/sizes.json', 'utf8'));
+const K = 0.349; // one scale for every picture, so the code text is the same size everywhere
+const PIC = (id, caption) => {
+  const [w, h] = SIZES[id];
+  return [
+    new Paragraph({ keepNext: true, spacing: { before: 120, after: 60 }, children: [new TextRun({ text: caption, bold: true, size: 20, color: GRAY })] }),
+    new Paragraph({ keepNext: true, spacing: { after: 100 }, children: [new ImageRun({ type: 'png', data: fs.readFileSync(__dirname + '/code/' + id + '.png'), transformation: { width: Math.round(w * K), height: Math.round(h * K) } })] }),
+    new Paragraph({ keepNext: true, spacing: { after: 60 }, children: [new TextRun({ text: 'How it works', bold: true, color: RED })] }),
+  ];
+};
+const L = (lines, text) => B('**' + lines + '** ' + text);
+
+body.push(pageBreak());
+body.push(H1('7. Reading the code (picture + explanation)'));
+body.push(P("Each picture below is copied from the real file. The **line numbers are the same as in Visual Studio**, so you can open the file and jump to a line with **Ctrl + G**. A **⋮** row means some lines in between were skipped. Under every picture, **How it works** explains it line by line."));
+body.push(P("The pictures follow the order the system is built in: the **entities** (what things are), the **DbContexts** (the rules), the **migration** (the tables EF made), the **connection** (how a database is found), then two real trips through the code: **signing in** and **saving a sale**, and last the **API**."));
+
+// 7.1 entities
+body.push(H2('7.1 Entities (Xpera.domain): what a thing is'));
+body.push(...PIC('company', 'Picture 1. Company.cs: one store in the Master (your file)'));
+body.push(L('Line 7', "`public class Company`: one class describes one table. The table is called **Companies** because that is the name of its DbSet in MasterCrmDbContext."));
+body.push(L('Line 9', "`CompanyId`: a property named after the class + `Id` becomes the **primary key**. Because it is an `int`, SQL Server numbers it by itself (1, 2, 3…)."));
+body.push(L('Lines 11, 13', "`= string.Empty` means the text is never null. How long it may be (50 and 200 letters) is set later in the DbContext."));
+body.push(L('Line 15', "`IsActive = true`: a store can be **suspended** without deleting it. The sign-in screen refuses a suspended store."));
+body.push(L('Line 17', "`CreatedAt = DateTime.UtcNow`: the date is filled in by itself when a new Company is made."));
+
+body.push(...PIC('companydb', "Picture 2. CompanyDatabase.cs: which database belongs to which store (your file)"));
+body.push(L('Line 11', "`CompanyId` is a **foreign key**: it points to the store in Companies that owns this database."));
+body.push(L('Lines 13, 15', "`ServerName` and `DatabaseName` are the tenant's “connection line”. The app builds the full connection string from these two values (Picture 12), which is why the app needs no line per tenant in a config file."));
+body.push(L('Line 19', "`Company? Company` is a **navigation property**: from a CompanyDatabase row, C# can reach its Company. The `?` means it may be empty when it was not loaded."));
+
+body.push(...PIC('sale', 'Picture 3. Sale.cs: one checkout in a store'));
+body.push(L('Lines 6–13', "One property = one column. `decimal` is used for money (never `double`, which can round 0.1 + 0.2 wrongly). `int?` and `DateTime?` (with `?`) may be empty: a sale may have no cashier, and only **credit** sales have a due date."));
+body.push(L('Line 14', "`List<SaleItem> Items`: one sale has **many** items. Because they are inside the Sale object, EF can save the sale and all its items in one go (Picture 18)."));
+body.push(SAY('"An entity is a plain C# class. It does not know about the database; it only describes the thing. That is why Xpera.domain has no packages."'));
+
+// 7.2 DbContexts
+body.push(H2('7.2 DbContexts (Xpera.infrastructure): the rules for the tables'));
+body.push(...PIC('mastercontext', 'Picture 4. MasterCrmDbContext.cs: the Master database (your file, plus Plans and Subscriptions)'));
+body.push(L('Line 10', "`: IdentityDbContext` means it **inherits** everything IdentityDbContext has: the ready-made login tables (AspNetUsers, AspNetRoles…). The Super Admin is a row in AspNetUsers."));
+body.push(L('Lines 12–18', "Each `DbSet<…>` is **one table**: Companies, CompanyDatabases, Plans, Subscriptions. `=> Set<Company>()` is a short way to write a getter."));
+body.push(L('Line 20', "The **constructor** receives the `options`, which say which server and database to use. The class never decides that itself: the API's Program.cs (Picture 11) or DbContexts.cs (Picture 13) hands the options in. That is why the same class works in both programs."));
+body.push(L('Lines 22–24', "`OnModelCreating` holds the rules EF cannot guess from the class. `base.OnModelCreating(builder)` must come first, or the Identity tables would be missing."));
+body.push(L('Lines 27–38', "`HasKey` = primary key. `HasMaxLength(50).IsRequired()` becomes `nvarchar(50) NOT NULL`. `HasIndex(...).IsUnique()` = no two stores can have the same code."));
+body.push(L('Lines 54–57', "`HasOne(...).WithMany().HasForeignKey(...)` = one Company has many CompanyDatabase rows. `DeleteBehavior.Restrict` = SQL Server refuses to delete a company that still has a database row, so data is never left pointing at nothing."));
+
+body.push(...PIC('tenantcontext', "Picture 5. TenantCrmDbContext.cs: the tables inside every store's database"));
+body.push(L('Line 11', "A plain `DbContext` (not Identity): store staff sign in through the store's own **Users** table."));
+body.push(L('Lines 13–29', "Nine DbSets = **nine tables**, the same in Xpera_TenantA, B and C."));
+body.push(L('Line 31', "Same idea as the Master: the options decide **which store** database. One class, three databases."));
+body.push(L('Line 38', "`today` is SQL text (`CAST(GETDATE() AS DATE)`) used as the default for every date column, so SQL Server fills in today's date by itself."));
+
+body.push(...PIC('tenantsale', 'Picture 6. TenantCrmDbContext.cs: the rules for the Sales table'));
+body.push(L('Lines 131–136', "A receipt number is required, at most 20 letters, and **unique**: two sales can never share OR-000483."));
+body.push(L('Lines 138–140', "`HasColumnType(\"date\")` keeps only the date (no time). `HasDefaultValueSql(today)` = today, if nothing is given."));
+body.push(L('Lines 146–147', "`HasPrecision(10, 2)` = `decimal(10,2)`: up to 99,999,999.99, always with centavos."));
+body.push(L('Lines 152–160', "Every sale must point to a **real customer** and a **real cashier** (foreign keys). `HasOne<Customer>()` with no property inside just adds the rule."));
+body.push(L('Lines 162–165', "`HasMany(x => x.Items)`: one sale, many SaleItems, joined by SaleId."));
+body.push(L('Lines 167–171', "**Check constraints**: SQL Server itself refuses a PaymentType other than Cash or Credit, or a negative total, even if a bug in the code or a typo in SSMS tries."));
+
+// 7.3 migration
+body.push(H2('7.3 The migration: what Add-Migration wrote'));
+body.push(...PIC('migration', 'Picture 7. InitialTenantCrm.cs: the Sales table, written by Add-Migration'));
+body.push(L('Whole picture', "You did not type this. **Add-Migration** read Picture 6 and wrote it. Compare them: `HasMaxLength(20)` → `nvarchar(20)` (line 180), `HasDefaultValueSql(today)` → `defaultValueSql` (line 181), `HasPrecision(10, 2)` → `decimal(10,2)` (line 185)."));
+body.push(L('Line 179', "`SqlServer:Identity, 1, 1` = the SaleId numbers itself, starting at 1, going up by 1."));
+body.push(L('Lines 190–204', "The primary key, the two check constraints and the two foreign keys from Picture 6."));
+body.push(L('When it runs', "**Update-Database** turns this into `CREATE TABLE Sales (...)`, runs it, and writes `InitialTenantCrm` into **__EFMigrationsHistory** so it never runs twice."));
+
+body.push(...PIC('view', 'Picture 8. InitialTenantCrm.cs: a view added by hand'));
+body.push(L('Line 325', "EF has no command for views, so this line was added by hand. `migrationBuilder.Sql(...)` runs any SQL during the migration."));
+body.push(L('Lines 326–331', "A **view** is a saved SELECT. For each customer it adds up what they spent (`SUM`) and finds their last visit (`MAX`). `LEFT JOIN` keeps customers who never bought anything (they show ₱0). Nothing is stored twice: the numbers are always worked out fresh from Sales."));
+body.push(L('EXEC(N’...’)', "The wrapper lets the same view also run inside the generated script `02-store-tables.sql` that setup.ps1 uses."));
+
+// 7.4 connection
+body.push(H2('7.4 The connection: how a database is found'));
+body.push(...PIC('appsettings', "Picture 9. appsettings.json: the API's connection strings"));
+body.push(L('Line 8', "`ConnectionStrings` is a list of **name: value** pairs."));
+body.push(L('Line 9', "`MasterCrm` is read from SSMS: `Server=` is the **Server name** box (written with `\\\\` in JSON because one `\\` is special there), `Database=` is the name under **Databases**, `Trusted_Connection=True` is **Windows Authentication**, `TrustServerCertificate=true` is the **Trust server certificate** tick."));
+body.push(L('Lines 10–12', "`TenantA`, `TenantB`, `TenantC` are the same, only the database name changes."));
+body.push(L('Who reads it', "Only **Xpera.api** (and the migration commands, which start Xpera.api). The desktop app never reads this file."));
+
+body.push(...PIC('apiprogram', "Picture 10. Program.cs (Xpera.api): where the API registers the DbContexts"));
+body.push(L('Line 4', "`builder` sets up the API. It reads appsettings.json by itself."));
+body.push(L('Lines 6–8', "`AddDbContext<MasterCrmDbContext>`: “whenever something needs a MasterCrmDbContext, make one with the `MasterCrm` line.” This is called **dependency injection**."));
+body.push(L('Line 13', "`builder.Configuration[\"Tenant\"] ?? \"TenantA\"`: read a setting called Tenant. `??` means “if it is empty, use TenantA”. The command `-Args \"--Tenant TenantB\"` fills it in."));
+body.push(L('Lines 14–16', "Registers TenantCrmDbContext with that line."));
+body.push(L('Why it matters', "Update-Database **starts this Program.cs** (that is what `-StartupProject Xpera.api` means) and uses these two registrations to know which database to build."));
+
+body.push(...PIC('db', 'Picture 11. Db.cs: opening a connection (used by the desktop app and the API controllers)'));
+body.push(L('Line 38', "`Open(database)` makes a `SqlConnection` and opens it."));
+body.push(L('Line 40', "If this database's password was wrong before, it stops right away. Online hosts like MonsterASP block a PC after repeated failed logins, so one wrong try must stay one."));
+body.push(L('Lines 47–51', "`catch ... when (ex.Number == 18456)` catches only **login failed**, remembers it, and passes the error on."));
+body.push(L('Lines 60–65', "If `databases.txt` (in your user folder) has a line for this database, that online connection string is used."));
+body.push(L('Lines 66–69', "Otherwise it **builds** the string: `Server=` from CompanyDatabases.ServerName (or LocalDB), `Database=` the name, `Integrated Security=true` (= Windows Authentication). This is how a tenant connects without a line in appsettings.json."));
+
+body.push(...PIC('dbcontexts', 'Picture 12. DbContexts.cs: the desktop version of AddDbContext'));
+body.push(L('Why it exists', "WinForms has no Program.cs services, so this file does by hand what `AddDbContext` does in the API."));
+body.push(L('Lines 9–13', "Makes a MasterCrmDbContext with `UseSqlServer(Db.Open(...))`: an already-open connection from Picture 11. `contextOwnsConnection: true` = closing the context also closes the connection."));
+body.push(L('Lines 16–20', "`Tenant(database)` does the same for one store. StoreDb passes the signed-in store's database (Picture 16)."));
+
+// 7.5 sign in
+body.push(H2('7.5 Trip 1: signing in with PIXEL01'));
+body.push(...PIC('login', 'Picture 13. LoginForm.cs (Xpera, the UI): the Sign in button'));
+body.push(L('Line 79', "Asks the Master for the store: `MasterDb.FindStore(code)` (Picture 14). No store → a message, and stop."));
+body.push(L('Lines 86–92', "The code `MASTER` is the Super Admin, checked by Identity in the Master database."));
+body.push(L('Line 94', "A suspended store cannot sign in."));
+body.push(L('Line 101', "`Session.Store = store`: **from here on, everything uses this store's database** (Picture 15)."));
+body.push(L('Lines 102–113', "`StoreDb.SignIn(...)` checks the username and password and answers Ok, Locked or WrongPassword."));
+body.push(L('Lines 127–131', "Opens MainForm, shows the store name and plan in the sidebar, and hides the login window."));
+body.push(L('Notice', "The UI never writes SQL. It only calls the infrastructure (MasterDb, StoreDb). That is the layering from section 1."));
+
+body.push(...PIC('finddstore', 'Picture 14. MasterDb.cs: finding the store in the Master'));
+body.push(L('Line 13', "`Trim().ToUpper()` so “ pixel01 ” still works."));
+body.push(L('Line 17', "`using ... = DbContexts.Master()` opens Xpera_Master. `using` closes it again at the end of the method."));
+body.push(L('Line 19', "A **LINQ** query. EF turns it into `SELECT ... FROM Companies WHERE CompanyCode = @p0`, with the typed code sent as a **parameter**, so typed text can never become SQL."));
+body.push(L('Lines 22–30', "Gets the store's **database row** and its **active subscription** (newest first), which says the plan: A, B or C."));
+body.push(L('Line 33', "Remembers which server that database lives on (used by Db.cs, Picture 11)."));
+body.push(L('Lines 35–44', "Packs everything into a `StoreInfo` (a domain class), for example Database = `Xpera_TenantA`, Plan = `A`."));
+
+body.push(...PIC('session', 'Picture 15. StoreDb.cs: Session, who is signed in'));
+body.push(L('static', "A `static` class has **one shared copy** for the whole program: the store, the user's id and name, and the role."));
+body.push(L('[ThreadStatic]', "Gives each thread its own copy. The desktop app has one thread, so nothing changes there. The API serves many people at once, so each request gets its own copy and clears it afterwards (`Clear()`, lines 16–22)."));
+body.push(L('Role', "MainForm reads `Session.Role` to show only the menu items for Admin, Cashier or Staff."));
+
+body.push(...PIC('signin', 'Picture 16. StoreDb.cs: Open() and SignIn()'));
+body.push(L('Lines 51–54', "`Open()` is used by **every** StoreDb method. It opens the signed-in store's database (`Session.Store.Database`). This one line is what keeps every store's data apart."));
+body.push(L('Lines 73–74', "Finds the user. An unknown user gets the same answer as a wrong password, so nobody can guess which usernames exist."));
+body.push(L('Line 77', "Compares **hashes**, not passwords. `Db.HashPassword` makes SHA-256 of “username:password”; the database only stores the hash."));
+body.push(L('Lines 79–82', "Wrong password: add 1 to FailedLogins; at 3 the account is **Locked**. `SaveChanges()` sends the UPDATE to SQL Server."));
+body.push(L('Lines 85–90', "Right password: reset the counter and fill in Session."));
+
+// 7.6 sale
+body.push(H2('7.6 Trip 2: saving a sale'));
+body.push(...PIC('salesbutton', 'Picture 17. SalesScreen.cs (Xpera, the UI): the Save sale button'));
+body.push(L('Lines 303–307', "Checks that there is a customer and at least one item."));
+body.push(L('Lines 310–315', "Turns every row of the cart into (ProductId, Quantity, Price)."));
+body.push(L('Line 319', "**One call** to the infrastructure: `StoreDb.SaveSale(...)`. It gives back the receipt number."));
+body.push(L('Lines 323–327', "Clears the cart, refreshes Sales history and shows “Sale saved”."));
+
+body.push(...PIC('savesale', 'Picture 18. StoreDb.cs: SaveSale()'));
+body.push(L('Lines 231–236', "The next receipt: the highest ReceiptNo + 1, written as OR-000484."));
+body.push(L('Line 242', "`BeginTransaction()`: **all or nothing**. Either the sale and all its items are saved, or nothing is."));
+body.push(L('Lines 245–254', "Builds the Sale object with its Items. The cashier comes from Session, the total is worked out from the items, and the due date is kept only for credit."));
+body.push(L('Lines 255–256', "`Add` + `SaveChanges()`: EF sends `INSERT INTO Sales`, gets the new SaleId, then `INSERT INTO SaleItems` with that SaleId."));
+body.push(L('Line 258', "`Commit()` makes it permanent. If anything failed before this line, `using` throws the transaction away and SQL Server undoes everything (a **rollback**)."));
+
+body.push(...PIC('readview', 'Picture 19. StoreDb.cs: reading a view, and the simplest save'));
+body.push(L('Line 169', "A view is not a table, so it has no DbSet. `Database.SqlQuery<CustomerSummaryRow>(...)` runs the SELECT and fills a CustomerSummaryRow for each row, matching columns to properties by name. Values put inside `$\"...{x}\"` are sent as parameters too."));
+body.push(L('Lines 170–171', "Sorts by name and turns each row into the cells of the Customers table (with ₱ money format)."));
+body.push(L('Lines 278–283', "`RecordPayment`: the simplest write. `Add` a Payment, `SaveChanges()` → one INSERT. The check constraint makes sure the amount is more than 0."));
+
+// 7.7 api
+body.push(H2('7.7 The API: the same code, over the web'));
+body.push(...PIC('controllerbase', 'Picture 20. StoreControllerBase.cs: the parent of every controller'));
+body.push(L('Line 15', "`InStore(work, roles)`: `work` is the code to run if the caller is allowed; `roles` says who may (empty = anyone signed in)."));
+body.push(L('Lines 17–21', "Reads the three headers. Missing → **401 Unauthorized**."));
+body.push(L('Lines 23–30', "Exactly the desktop sign-in: FindStore (Picture 14), then Session.Store and StoreDb.SignIn (Picture 16)."));
+body.push(L('Lines 33–34', "Wrong role → **403 Forbidden**."));
+body.push(L('Lines 36–37', "Runs the work. An answer → **200 OK** with JSON; nothing → **204 No Content**."));
+body.push(L('Lines 39–46', "A `Require` that failed → **400 Bad Request**. `finally` always clears Session, so the next request starts signed out."));
+
+body.push(...PIC('payments', 'Picture 21. PaymentsController.cs: one controller'));
+body.push(L('Line 8', "`[Route(\"api/payments\")]` = the web address."));
+body.push(L('Lines 11–12', "`GET api/payments` lists the payments."));
+body.push(L('Lines 14–21', "`POST api/payments`: the JSON body becomes a `Payment` object by itself. `Require` checks it, then it calls **the same** `StoreDb.RecordPayment` the desktop Payments screen uses. Only Admin or Cashier."));
+
+body.push(H2('7.8 The whole trip of one sale, in one list'));
+['The cashier clicks **Save sale** (Picture 17, UI).',
+ 'The screen calls `StoreDb.SaveSale` (Picture 18, infrastructure).',
+ '`Open()` asks `DbContexts.Tenant(Session.Store.Database)` for **Xpera_TenantA** (Pictures 16 and 12).',
+ '`Db.Open` builds the connection string and opens it (Picture 11).',
+ 'EF uses the rules in **TenantCrmDbContext** (Picture 6) to write the INSERTs for the **Sale** and its **SaleItems** (Picture 3).',
+ 'SQL Server checks the constraints the **migration** made (Picture 7) and saves the rows.',
+ '`Commit()`, then the receipt number goes back to the screen, which shows “Sale saved”.',
+].forEach(s => body.push(N(s, 'trip')));
+body.push(SAY('"The screen only asks. The infrastructure does the work through the DbContext. The domain class carries the data. And the database was built by the migration, from the same DbContext rules."'));

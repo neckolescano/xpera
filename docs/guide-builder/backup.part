@@ -1,0 +1,125 @@
+// ---------- 8. Cloud backup and sign out (MonsterASP) ----------
+const SIZES2 = JSON.parse(fs.readFileSync(__dirname + '/code2/sizes.json', 'utf8'));
+const PIC2 = (id, caption) => {
+  const [w, h] = SIZES2[id];
+  return [
+    new Paragraph({ keepNext: true, spacing: { before: 120, after: 60 }, children: [new TextRun({ text: caption, bold: true, size: 20, color: GRAY })] }),
+    new Paragraph({ keepNext: true, spacing: { after: 100 }, children: [new ImageRun({ type: 'png', data: fs.readFileSync(__dirname + '/code2/' + id + '.png'), transformation: { width: Math.round(w * K), height: Math.round(h * K) } })] }),
+    new Paragraph({ keepNext: true, spacing: { after: 60 }, children: [new TextRun({ text: 'How it works', bold: true, color: RED })] }),
+  ];
+};
+
+body.push(H1('8. Cloud backup and sign out (MonsterASP)'));
+body.push(P("**The idea:** each store works on its **own PC** (LocalDB). That stays the main database: it is fast and keeps working when the internet is down. Each store also has a database on **MonsterASP** (the cloud). xpera copies the store's local data **up** to it. The copy only goes one way, **local → cloud**, so the cloud is the store's backup: if the PC breaks, the data is still safe online."));
+body.push(P("**When it copies** (my teacher left this to my own logic):"));
+body.push(table(['When', 'Who', 'Why'], [
+  ['**Back up now** button in the sidebar', 'Admin (store owner) only', 'The owner decides; easy to show in a demo.'],
+  ['**Sign out** (the arrow icon on the profile card)', 'Any role', 'Cashiers add most of the day\'s sales, so every sign-out saves the day\'s work.'],
+  ['**Closing the window (×)**', 'Any role', 'Closing xpera counts as signing out, so nothing is forgotten.'],
+], [3300, 2200, 3860]));
+body.push(P("The sidebar shows **Last backup · 1:05 PM** (or **Failed · no internet** in red). Hovering over it shows the full date, time and number of rows.", { spacing: { before: 120, after: 120 } }));
+body.push(SAY('"xpera works offline on the store\'s PC. When the owner clicks Back up now, or anyone signs out, it copies that store\'s data to its own cloud database. If the internet is down, nothing breaks: it simply tries again next time."'));
+
+body.push(H2('8.1 The cloud databases'));
+body.push(table(['Local (main)', 'MonsterASP (backup)', 'Login key'], [
+  ['Xpera_Master', 'db77928 (master_xpera)', 'CloudMaster'],
+  ['Xpera_TenantA · PixelZone', 'db79610 (tenanta_xpera)', 'CloudTenantA'],
+  ['Xpera_TenantB · Arcade Supply', 'db79617 (tenantb_xpera)', 'CloudTenantB'],
+  ['Xpera_TenantC · Gaming Hub', 'db79621 (tenantc_xpera)', 'CloudTenantC'],
+], [3300, 3300, 2760]));
+body.push(P('The cloud tables were built **the same way as the local ones**, with the same migrations. `Program.cs` picks the database by name from `appsettings.json`:', { spacing: { before: 120, after: 80 } }));
+body.push(...CODE(`Update-Database -Context MasterCrmDbContext -StartupProject Xpera.api -Args "--Master CloudMaster"
+Update-Database -Context TenantCrmDbContext -StartupProject Xpera.api -Args "--Tenant CloudTenantA"
+Update-Database -Context TenantCrmDbContext -StartupProject Xpera.api -Args "--Tenant CloudTenantB"
+Update-Database -Context TenantCrmDbContext -StartupProject Xpera.api -Args "--Tenant CloudTenantC"`));
+body.push(P('Then the cloud Master got its data in SSMS: `01-master-data.sql`, plus 3 `UPDATE` lines so each store points to **its cloud database** with the key `CloudTenantA/B/C`. The local Master keeps pointing to Xpera_TenantA/B/C with the keys TenantA/B/C. Each Master is the "address book" of its own world.'));
+body.push(NOTE('SQL logins everywhere:', 'MonsterASP only accepts SQL logins (it does not know my Windows account). Locally I also use one SQL login per database, so local and cloud work the same way and each login opens only its own store.'));
+
+body.push(H2('8.2 Where the cloud passwords live'));
+body.push(...PIC2('cloudjson', 'Picture 22. cloud.json: the desktop app\'s cloud settings (sample, passwords hidden)'));
+body.push(L('Where', "In my **user folder** (`C:\\Users\\<me>\\.xpera\\cloud.json`), **not in the project**. So the passwords are never in the code, never in a screenshot of Visual Studio, and never in a zip I hand in."));
+body.push(L('Line 3', "`CloudMaster`: how to open the **cloud Master** (db77928)."));
+body.push(L('Lines 5\u20139', "`TenantCredentials`: the cloud login of each store, in the **same format** as the API\'s `appsettings.json`, so the teacher\'s `TenantDbContextFactory` can read it unchanged."));
+
+body.push(H2('8.3 Trip 3: clicking Back up now'));
+body.push(...PIC2('bkwire', 'Picture 23. MainForm.cs: connecting the sidebar parts'));
+body.push(L('Line 154', "Only the **Admin** sees the Back up now row."));
+body.push(L('Line 155', "Clicking it runs `BackUpNow()` (Picture 24)."));
+body.push(L('Line 156', "Clicking the sign-out icon on the profile card runs `SignOut(...)` (Picture 26)."));
+body.push(L('Line 157', "Shows the line under the button: **Last backup · …**, **Failed · …** or **Not backed up yet**."));
+
+body.push(...PIC2('bkrun', 'Picture 24. MainForm.cs: RunBackup() and BackUpNow()'));
+body.push(L('Lines 216\u2013218', "Remembers which store is signed in and turns the row into **Backing up…**."));
+body.push(L('Lines 219\u2013220', "Opens the **Backing up** pop-up (Picture 25) and gives it the work to do: `CloudBackup.RunAsync(store)`."));
+body.push(L('Lines 221\u2013223', "When it is done: refresh the sidebar line and hand back the result."));
+body.push(L('Lines 228\u2013232', "`BackUpNow()` runs it and shows **Backed up** (with the number of rows) or **Not backed up** (with the reason)."));
+
+body.push(...PIC2('bkdialog', 'Picture 25. BackupDialog.cs: the "Backing up…" pop-up'));
+body.push(L('Line 35', "`Task.Run`: the copy runs on a **background thread**, so the window keeps drawing and does not look frozen while it waits for the internet."));
+body.push(L('Lines 36\u201337', "When the copy is done, the pop-up closes by itself."));
+body.push(L('Lines 41\u201345', "The × and Esc do nothing **until it is done**. The copy is one transaction, so it must finish (or fail) on its own."));
+
+body.push(H2('8.4 Trip 4: signing out'));
+body.push(...PIC2('bksignout', 'Picture 26. MainForm.cs: SignOut() and the window\'s ×'));
+body.push(L('Lines 239\u2013240', "`_leaving` makes sure it only runs **once**, even if someone clicks twice."));
+body.push(L('Line 241', "Backs up only if it should (Picture 28, lines 70\u201376): cloud.json exists, and the last try did not fail with a **wrong password**."));
+body.push(L('Lines 243\u2013245', "Runs the backup. If it did not work, it says why, and that **the data is still safe on this PC**. It signs out anyway."));
+body.push(L('Lines 247\u2013249', "Remembers whether this was a **sign-out** or **closing xpera**, forgets who was signed in (`Session.Clear()`), and closes the main window."));
+body.push(L('Lines 253\u2013262', "Clicking the window\'s **×**: instead of closing at once, it cancels the close and calls `SignOut(exitApp: true)`, so closing xpera also backs up."));
+
+body.push(...PIC2('bklogin', 'Picture 27. LoginForm.cs: what happens after the main window closes'));
+body.push(L('Line 132', "Closed with the **×** \u2192 the whole app ends."));
+body.push(L('Lines 133\u2013135', "**Signed out** \u2192 the sign-in window comes back, with the password cleared and the cursor in Username. The store code stays filled in."));
+
+body.push(H2('8.5 The copy itself (Xpera.infrastructure)'));
+body.push(...PIC2('bkentry', 'Picture 28. CloudBackup.cs: RunAsync() and ShouldRunOnSignOut()'));
+body.push(L('Line 50', "Does the real work in `CopyAsync` (Pictures 29 and 30)."));
+body.push(L('Lines 52\u201363', "Turns errors into plain reasons: **wrong password** (error 18456), **no internet**, or anything else."));
+body.push(L('Line 64', "Saves the result in a small file per store (`%LOCALAPPDATA%\\Xpera\\backup-PIXEL01.txt`). That is where **Last backup** comes from."));
+body.push(L('Lines 70\u201376', "After a **wrong password**, signing out does **not** try again until cloud.json is changed. MonsterASP blocks a PC after repeated failed logins."));
+
+body.push(...PIC2('bkfind', 'Picture 29. CloudBackup.cs: finding and opening the cloud database'));
+body.push(L('Lines 80\u201386', "Reads `cloud.json` with `ConfigurationBuilder`, the same way ASP.NET reads `appsettings.json`."));
+body.push(L('Lines 89\u201390', "A **4-second internet check** first, so signing out without internet does not hang."));
+body.push(L('Lines 93\u201397', "Opens the **cloud Master** and finds the store by its code (PIXEL01)."));
+body.push(L('Lines 100\u2013101', "**The teacher\'s resolver and factory** (Session 3) open that store\'s cloud database with its cloud login. The same code the API uses."));
+body.push(L('Lines 106\u2013109', "Opens both connections **by hand, one login try each**. (EF\'s own migration check retries a failed login for about a minute, which on MonsterASP would count as many wrong passwords. I found this while testing.)"));
+body.push(L('Lines 112\u2013116', "Both databases must have the **same last migration** (same tables). If the cloud is behind, it says to run `Update-Database` first."));
+
+body.push(...PIC2('bkcopy', 'Picture 30. CloudBackup.cs: replacing the cloud copy in one transaction'));
+body.push(L('Line 122', "**One transaction**: either the whole copy is saved, or the cloud stays exactly as it was."));
+body.push(L('Lines 124\u2013128', "Empties the cloud tables, **children first** (SaleItems before Sales before Customers), so no foreign key complains."));
+body.push(L('Lines 130\u2013147', "Copies every table, **parents first**, with `SqlBulkCopy`: it streams all rows in one go, which is much faster than one INSERT per row. `KeepIdentity` keeps the **same IDs**, so a receipt points to the same sale in both places."));
+body.push(L('Lines 150\u2013153', "Moves the cloud\'s ID counter past the copied rows, so a new row there would not clash."));
+body.push(L('Line 156', "`Commit`: the cloud copy is now an exact copy of local. Running it again replaces it again, so deleted rows also disappear from the cloud."));
+
+body.push(...PIC2('bkorder', 'Picture 31. CloudBackup.cs: which table goes first'));
+body.push(L('Line 169', "Asks the **DbContext** for every table it knows (the views are skipped)."));
+body.push(L('Lines 171\u2013178', "Repeats: take a table whose parents (foreign keys) are **already in the list**. That gives Users and Products and Customers first, then Sales, then SaleItems."));
+body.push(L('Why', "Nothing is typed by hand, so the **Lab 2 tables** (campaigns) will be backed up automatically once their migration exists."));
+
+body.push(H2('8.6 What can go wrong, and what xpera does'));
+body.push(table(['Situation', 'What the user sees', 'Data'], [
+  ['No internet', '"Can\'t reach the cloud right now…" after about 4 seconds; sidebar: **Failed · no internet**', 'Safe on the PC; next sign-out tries again'],
+  ['Wrong cloud password', '"The cloud refused the login…"; sidebar: **Failed · login refused**', 'Safe; no automatic retry until cloud.json is fixed'],
+  ['Cloud missing a migration', '"…doesn\'t have the newest tables yet. Run Update-Database…"', 'Cloud not touched'],
+  ['cloud.json missing', 'Sidebar: **Not set up on this PC**', 'Signing out works as before'],
+  ['Error halfway through', '"The backup stopped: …"', 'Transaction rolled back: the cloud keeps the last good copy'],
+], [2500, 4300, 2560]));
+
+body.push(H2('8.7 How I tested it'));
+body.push(B('On a **test copy** (a second LocalDB acting as the "cloud", with a SQL login like MonsterASP): 635 rows in 9 tables, every table **identical by checksum** (IDs included), the views work in the copy, and running it twice gives the same result.'));
+body.push(B('A new customer and a deleted feedback showed up in the copy after the next backup.'));
+body.push(B('Wrong password: **one** login try, fails in about 1 second. No internet: fails in 4 seconds. Missing migration and missing cloud.json: clear messages.'));
+body.push(B('Then the real one: **Back up now** on PIXEL01 → db79610 on MonsterASP.'));
+
+body.push(H2('8.8 The whole backup trip, in one list'));
+['The owner clicks **Back up now**, or anyone **signs out** (Pictures 23, 26).',
+ 'The **Backing up** pop-up runs the copy in the background (Pictures 24, 25).',
+ '`CloudBackup` reads `cloud.json` and checks the internet (Picture 29).',
+ 'The **cloud Master** says which cloud database is PIXEL01\'s: db79610, key CloudTenantA.',
+ 'The **teacher\'s factory** opens db79610 with the CloudTenantA login.',
+ 'Same migration on both? Then, in **one transaction**: empty the cloud tables, copy every local table, commit (Pictures 30, 31).',
+ 'The sidebar shows **Last backup · 1:05 PM**; after a sign-out, the sign-in window comes back (Picture 27).',
+].forEach(s => body.push(N(s, 'trip2')));
+body.push(SAY('"The backup reuses the same multi-tenant pieces as the API: the cloud Master finds the store\'s cloud database, the tenant factory opens it with that store\'s own login, and the copy is one transaction, so the cloud always holds a complete copy."'));

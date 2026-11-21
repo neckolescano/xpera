@@ -1,0 +1,33 @@
+xpera schedules for ProjectLibre
+================================
+
+1 - My current timeline.xml
+    Your own plan as you edited it: Oct 30 to Dec 4, 7-day weeks (weekends worked). About P41,900.
+
+2 - Realistic estimate.xml
+    A slower real-world plan for one junior developer: Oct 30 to Mar 22, Monday to Friday only.
+    About P112,600.
+
+Both list the 15 use cases directly under "xpera CRM" (Front-End, Back-End, Quality Assurance),
+then Testing, and Hosting / Domain / Cloud Database. No Setup or Lab rows.
+
+Davao rates (the same in both):
+    Nicho FD  P130/hour   (overtime P162.50)
+    Nicho BD  P150/hour   (overtime P187.50)
+    Nicho QA  P110/hour   (overtime P137.50)
+    Hosting P1,500, Domain P800, Cloud Database P1,800 (one-time "cost per use")
+
+HOW TO OPEN ONE (once per file)
+1. ProjectLibre > File > Open > pick the .xml (set the file type to XML if you don't see it).
+2. If the project starts on today's date instead of Oct 30: Project > Information > Start date = 10/30/26 > OK.
+3. Right away: File > Save as > ProjectLibre (.pod), same folder, same name. From then on open the .pod.
+   (Never press plain Save on an .xml: ProjectLibre renames it with "_tmp0".)
+4. Money: right-click a column header > Insert column > Cost. The top row is the project total.
+
+ICONS
+- Gear on resources = "This resource is on the project team". Normal.
+- Calendar on a task = a date constraint. To clear all: click the gray corner box above row 1,
+  Task > Information > Advanced > Constraint type = As soon as possible > OK.
+
+To change hours or rates: edit the numbers in make-schedules.py and run:  python make-schedules.py
+The "old" folder has earlier versions. You can delete it.

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Theme\*.cs" Link="Theme\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Inter, the brand's UI font. Copied next to the app and loaded by Typography.cs. -->
+  <ItemGroup>
+    <None Include="Fonts\*.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Fonts\Inter-LICENSE.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- The UI shows things; the models live in Xpera.domain and the database code in Xpera.infrastructure. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Xpera.domain\Xpera.domain.csproj" />
+    <ProjectReference Include="..\Xpera.infrastructure\Xpera.infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xpera.domain" />
+    <Using Include="Xpera.domain.entities" />
+    <Using Include="Xpera.infrastructure.data" />
+  </ItemGroup>
+
+</Project>

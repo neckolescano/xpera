@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Project xmlns="http://schemas.microsoft.com/project">
+<Name>xpera CRM</Name><Title>xpera CRM</Title><ScheduleFromStart>1</ScheduleFromStart>
+<StartDate>2026-10-30T08:00:00</StartDate><FinishDate>2026-12-04T11:50:00</FinishDate>
+<CurrencyDigits>2</CurrencyDigits><CurrencySymbol>₱</CurrencySymbol><CurrencyCode>PHP</CurrencyCode>
+<CalendarUID>1</CalendarUID><DefaultStartTime>08:00:00</DefaultStartTime><DefaultFinishTime>17:00:00</DefaultFinishTime>
+<MinutesPerDay>480</MinutesPerDay><MinutesPerWeek>3360</MinutesPerWeek><DaysPerMonth>20</DaysPerMonth>
+<Calendars><Calendar><UID>1</UID><Name>xpera 7-day week</Name><IsBaseCalendar>1</IsBaseCalendar><WeekDays>
+<WeekDay><DayType>1</DayType><DayWorking>1</DayWorking><WorkingTimes><WorkingTime><FromTime>08:00:00</FromTime><ToTime>12:00:00</ToTime></WorkingTime><WorkingTime><FromTime>13:00:00</FromTime><ToTime>17:00:00</ToTime></WorkingTime></WorkingTimes></WeekDay>
+<WeekDay><DayType>2</DayType><DayWorking>1</DayWorking><WorkingTimes><WorkingTime><FromTime>08:00:00</FromTime><ToTime>12:00:00</ToTime></WorkingTime><WorkingTime><FromTime>13:00:00</FromTime><ToTime>17:00:00</ToTime></WorkingTime></WorkingTimes></WeekDay>
+<WeekDay><DayType>3</DayType><DayWorking>1</DayWorking><WorkingTimes><WorkingTime><FromTime>08:00:00</FromTime><ToTime>12:00:00</ToTime></WorkingTime><WorkingTime><FromTime>13:00:00</FromTime><ToTime>17:00:00</ToTime></WorkingTime></WorkingTimes></WeekDay>
+<WeekDay><DayType>4</DayType><DayWorking>1</DayWorking><WorkingTimes><WorkingTime><FromTime>08:00:00</FromTime><ToTime>12:00:00</ToTime></WorkingTime><WorkingTime><FromTime>13:00:00</FromTime><ToTime>17:00:00</ToTime></WorkingTime></WorkingTimes></WeekDay>
+<WeekDay><DayType>5</DayType><DayWorking>1</DayWorking><WorkingTimes><WorkingTime><FromTime>08:00:00</FromTime><ToTime>12:00:00</ToTime></WorkingTime><WorkingTime><FromTime>13:00:00</FromTime><ToTime>17:00:00</ToTime></WorkingTime></WorkingTimes></WeekDay>
+<WeekDay><DayType>6</DayType><DayWorking>1</DayWorking><WorkingTimes><WorkingTime><FromTime>08:00:00</FromTime><ToTime>12:00:00</ToTime></WorkingTime><WorkingTime><FromTime>13:00:00</FromTime><ToTime>17:00:00</ToTime></WorkingTime></WorkingTimes></WeekDay>
+<WeekDay><DayType>7</DayType><DayWorking>1</DayWorking><WorkingTimes><WorkingTime><FromTime>08:00:00</FromTime><ToTime>12:00:00</ToTime></WorkingTime><WorkingTime><FromTime>13:00:00</FromTime><ToTime>17:00:00</ToTime></WorkingTime></WorkingTimes></WeekDay>
+</WeekDays></Calendar></Calendars><Tasks>
+<Task><UID>1</UID><ID>1</ID><Name>xpera CRM</Name><Type>1</Type><IsNull>0</IsNull><WBS>1</WBS><OutlineNumber>1</OutlineNumber><OutlineLevel>1</OutlineLevel><Start>2026-10-30T08:00:00</Start><Finish>2026-12-04T11:50:00</Finish><Duration>PT283H50M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>2</UID><ID>2</ID><Name>UC-01 Manage Staff Accounts</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.1</WBS><OutlineNumber>1.1</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-10-30T08:00:00</Start><Finish>2026-10-30T14:17:00</Finish><Duration>PT5H17M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>3</UID><ID>3</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.1.1</WBS><OutlineNumber>1.1.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-10-30T08:00:00</Start><Finish>2026-10-30T10:24:00</Finish><Duration>PT2H24M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>4</UID><ID>4</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.1.2</WBS><OutlineNumber>1.1.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-10-30T10:24:00</Start><Finish>2026-10-30T12:00:00</Finish><Duration>PT1H36M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>3</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>5</UID><ID>5</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.1.3</WBS><OutlineNumber>1.1.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-10-30T13:00:00</Start><Finish>2026-10-30T14:17:00</Finish><Duration>PT1H17M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>4</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>6</UID><ID>6</ID><Name>UC-02 Manage Products</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.2</WBS><OutlineNumber>1.2</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-10-30T14:17:00</Start><Finish>2026-10-31T10:24:00</Finish><Duration>PT5H7M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>7</UID><ID>7</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.2.1</WBS><OutlineNumber>1.2.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-10-30T14:17:00</Start><Finish>2026-10-30T16:41:00</Finish><Duration>PT2H24M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>5</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>8</UID><ID>8</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.2.2</WBS><OutlineNumber>1.2.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-10-30T16:41:00</Start><Finish>2026-10-31T09:17:00</Finish><Duration>PT1H36M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>7</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>9</UID><ID>9</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.2.3</WBS><OutlineNumber>1.2.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-10-31T09:17:00</Start><Finish>2026-10-31T10:24:00</Finish><Duration>PT1H7M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>8</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>10</UID><ID>10</ID><Name>UC-03 Manage Customer Records</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.3</WBS><OutlineNumber>1.3</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-10-31T10:24:00</Start><Finish>2026-11-01T09:41:00</Finish><Duration>PT7H17M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>11</UID><ID>11</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.3.1</WBS><OutlineNumber>1.3.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-10-31T10:24:00</Start><Finish>2026-10-31T14:26:00</Finish><Duration>PT3H2M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>9</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>12</UID><ID>12</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.3.2</WBS><OutlineNumber>1.3.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-10-31T14:26:00</Start><Finish>2026-11-01T08:14:00</Finish><Duration>PT2H48M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>11</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>13</UID><ID>13</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.3.3</WBS><OutlineNumber>1.3.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-01T08:14:00</Start><Finish>2026-11-01T09:41:00</Finish><Duration>PT1H26M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>12</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>14</UID><ID>14</ID><Name>UC-04 Record Sale</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.4</WBS><OutlineNumber>1.4</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-01T09:41:00</Start><Finish>2026-11-02T08:48:00</Finish><Duration>PT7H7M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>15</UID><ID>15</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.4.1</WBS><OutlineNumber>1.4.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-01T09:41:00</Start><Finish>2026-11-01T13:53:00</Finish><Duration>PT3H12M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>13</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>16</UID><ID>16</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.4.2</WBS><OutlineNumber>1.4.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-01T13:53:00</Start><Finish>2026-11-01T16:41:00</Finish><Duration>PT2H48M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>15</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>17</UID><ID>17</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.4.3</WBS><OutlineNumber>1.4.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-01T16:41:00</Start><Finish>2026-11-02T08:48:00</Finish><Duration>PT1H7M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>16</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>18</UID><ID>18</ID><Name>UC-05 Record Payment</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.5</WBS><OutlineNumber>1.5</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-02T08:48:00</Start><Finish>2026-11-02T16:36:00</Finish><Duration>PT6H48M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>19</UID><ID>19</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.5.1</WBS><OutlineNumber>1.5.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-02T08:48:00</Start><Finish>2026-11-02T11:12:00</Finish><Duration>PT2H24M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>17</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>20</UID><ID>20</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.5.2</WBS><OutlineNumber>1.5.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-02T11:12:00</Start><Finish>2026-11-02T14:36:00</Finish><Duration>PT2H24M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>19</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>21</UID><ID>21</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.5.3</WBS><OutlineNumber>1.5.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-02T14:36:00</Start><Finish>2026-11-02T16:36:00</Finish><Duration>PT2H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>20</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>22</UID><ID>22</ID><Name>UC-06 Manage Inquiries</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.6</WBS><OutlineNumber>1.6</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-02T16:36:00</Start><Finish>2026-11-03T13:10:00</Finish><Duration>PT4H34M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>23</UID><ID>23</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.6.1</WBS><OutlineNumber>1.6.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-02T16:36:00</Start><Finish>2026-11-03T09:36:00</Finish><Duration>PT2H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>21</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>24</UID><ID>24</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.6.2</WBS><OutlineNumber>1.6.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-03T09:36:00</Start><Finish>2026-11-03T11:12:00</Finish><Duration>PT1H36M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>23</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>25</UID><ID>25</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.6.3</WBS><OutlineNumber>1.6.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-03T11:12:00</Start><Finish>2026-11-03T13:10:00</Finish><Duration>PT0H58M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>24</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>26</UID><ID>26</ID><Name>UC-07 Manage Complaints</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.7</WBS><OutlineNumber>1.7</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-03T13:10:00</Start><Finish>2026-11-03T16:41:00</Finish><Duration>PT3H31M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>27</UID><ID>27</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.7.1</WBS><OutlineNumber>1.7.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-03T13:10:00</Start><Finish>2026-11-03T15:34:00</Finish><Duration>PT2H24M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>25</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>28</UID><ID>28</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.7.2</WBS><OutlineNumber>1.7.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-03T15:34:00</Start><Finish>2026-11-03T16:31:00</Finish><Duration>PT0H58M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>27</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>29</UID><ID>29</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.7.3</WBS><OutlineNumber>1.7.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-03T16:31:00</Start><Finish>2026-11-03T16:41:00</Finish><Duration>PT0H10M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>28</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>30</UID><ID>30</ID><Name>UC-08 Record Feedback</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.8</WBS><OutlineNumber>1.8</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-03T16:41:00</Start><Finish>2026-11-04T11:50:00</Finish><Duration>PT4H10M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>31</UID><ID>31</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.8.1</WBS><OutlineNumber>1.8.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-03T16:41:00</Start><Finish>2026-11-04T10:19:00</Finish><Duration>PT2H38M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>29</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>32</UID><ID>32</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.8.2</WBS><OutlineNumber>1.8.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-04T10:19:00</Start><Finish>2026-11-04T11:31:00</Finish><Duration>PT1H12M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>31</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>33</UID><ID>33</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.8.3</WBS><OutlineNumber>1.8.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-04T11:31:00</Start><Finish>2026-11-04T11:50:00</Finish><Duration>PT0H19M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>32</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>34</UID><ID>34</ID><Name>UC-09 View BI Dashboard</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.9</WBS><OutlineNumber>1.9</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-04T11:50:00</Start><Finish>2026-11-06T14:50:00</Finish><Duration>PT18H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>35</UID><ID>35</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.9.1</WBS><OutlineNumber>1.9.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-04T11:50:00</Start><Finish>2026-11-05T11:50:00</Finish><Duration>PT8H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>33</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>36</UID><ID>36</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.9.2</WBS><OutlineNumber>1.9.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-05T11:50:00</Start><Finish>2026-11-06T11:50:00</Finish><Duration>PT8H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>35</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>37</UID><ID>37</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.9.3</WBS><OutlineNumber>1.9.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-06T11:50:00</Start><Finish>2026-11-06T14:50:00</Finish><Duration>PT2H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>36</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>38</UID><ID>38</ID><Name>UC-10 Generate Operational Report</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.10</WBS><OutlineNumber>1.10</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-06T14:50:00</Start><Finish>2026-11-07T16:50:00</Finish><Duration>PT10H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>39</UID><ID>39</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.10.1</WBS><OutlineNumber>1.10.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-06T14:50:00</Start><Finish>2026-11-07T09:50:00</Finish><Duration>PT4H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>37</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>40</UID><ID>40</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.10.2</WBS><OutlineNumber>1.10.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-07T09:50:00</Start><Finish>2026-11-07T14:50:00</Finish><Duration>PT4H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>39</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>41</UID><ID>41</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.10.3</WBS><OutlineNumber>1.10.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-07T14:50:00</Start><Finish>2026-11-07T16:50:00</Finish><Duration>PT2H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>40</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>42</UID><ID>42</ID><Name>UC-11 Manage Retention Campaigns</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.11</WBS><OutlineNumber>1.11</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-07T16:50:00</Start><Finish>2026-11-10T11:50:00</Finish><Duration>PT20H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>43</UID><ID>43</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.11.1</WBS><OutlineNumber>1.11.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-07T16:50:00</Start><Finish>2026-11-08T16:50:00</Finish><Duration>PT8H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>41</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>44</UID><ID>44</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.11.2</WBS><OutlineNumber>1.11.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-08T16:50:00</Start><Finish>2026-11-09T16:50:00</Finish><Duration>PT8H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>43</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>45</UID><ID>45</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.11.3</WBS><OutlineNumber>1.11.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-09T16:50:00</Start><Finish>2026-11-10T11:50:00</Finish><Duration>PT4H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>44</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>46</UID><ID>46</ID><Name>UC-12 Manage Branches</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.12</WBS><OutlineNumber>1.12</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-10T11:50:00</Start><Finish>2026-11-17T11:50:00</Finish><Duration>PT56H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>47</UID><ID>47</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.12.1</WBS><OutlineNumber>1.12.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-10T11:50:00</Start><Finish>2026-11-13T11:50:00</Finish><Duration>PT24H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>45</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>48</UID><ID>48</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.12.2</WBS><OutlineNumber>1.12.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-13T11:50:00</Start><Finish>2026-11-16T11:50:00</Finish><Duration>PT24H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>47</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>49</UID><ID>49</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.12.3</WBS><OutlineNumber>1.12.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-16T11:50:00</Start><Finish>2026-11-17T11:50:00</Finish><Duration>PT8H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>48</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>50</UID><ID>50</ID><Name>UC-13 Manage Tenants</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.13</WBS><OutlineNumber>1.13</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-17T11:50:00</Start><Finish>2026-11-24T11:50:00</Finish><Duration>PT56H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>51</UID><ID>51</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.13.1</WBS><OutlineNumber>1.13.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-17T11:50:00</Start><Finish>2026-11-20T11:50:00</Finish><Duration>PT24H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>49</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>52</UID><ID>52</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.13.2</WBS><OutlineNumber>1.13.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-20T11:50:00</Start><Finish>2026-11-23T11:50:00</Finish><Duration>PT24H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>51</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>53</UID><ID>53</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.13.3</WBS><OutlineNumber>1.13.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-23T11:50:00</Start><Finish>2026-11-24T11:50:00</Finish><Duration>PT8H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>52</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>54</UID><ID>54</ID><Name>UC-14 Manage Subscriptions</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.14</WBS><OutlineNumber>1.14</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-24T11:50:00</Start><Finish>2026-11-27T16:50:00</Finish><Duration>PT28H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>55</UID><ID>55</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.14.1</WBS><OutlineNumber>1.14.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-24T11:50:00</Start><Finish>2026-11-25T16:50:00</Finish><Duration>PT12H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>53</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>56</UID><ID>56</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.14.2</WBS><OutlineNumber>1.14.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-25T16:50:00</Start><Finish>2026-11-27T11:50:00</Finish><Duration>PT12H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>55</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>57</UID><ID>57</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.14.3</WBS><OutlineNumber>1.14.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-27T11:50:00</Start><Finish>2026-11-27T16:50:00</Finish><Duration>PT4H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>56</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>58</UID><ID>58</ID><Name>UC-15 View Platform Insights</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.15</WBS><OutlineNumber>1.15</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-11-27T16:50:00</Start><Finish>2026-12-01T11:50:00</Finish><Duration>PT28H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>59</UID><ID>59</ID><Name>Front-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.15.1</WBS><OutlineNumber>1.15.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-27T16:50:00</Start><Finish>2026-11-29T11:50:00</Finish><Duration>PT12H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>57</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>60</UID><ID>60</ID><Name>Back-End</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.15.2</WBS><OutlineNumber>1.15.2</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-29T11:50:00</Start><Finish>2026-11-30T16:50:00</Finish><Duration>PT12H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>59</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>61</UID><ID>61</ID><Name>Quality Assurance</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.15.3</WBS><OutlineNumber>1.15.3</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-11-30T16:50:00</Start><Finish>2026-12-01T11:50:00</Finish><Duration>PT4H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>60</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>62</UID><ID>62</ID><Name>Testing</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.16</WBS><OutlineNumber>1.16</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-12-01T11:50:00</Start><Finish>2026-12-04T11:50:00</Finish><Duration>PT24H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>1</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>63</UID><ID>63</ID><Name>Final Testing</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.16.1</WBS><OutlineNumber>1.16.1</OutlineNumber><OutlineLevel>3</OutlineLevel><Start>2026-12-01T11:50:00</Start><Finish>2026-12-04T11:50:00</Finish><Duration>PT24H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+<PredecessorLink><PredecessorUID>61</PredecessorUID><Type>1</Type></PredecessorLink>
+</Task>
+<Task><UID>64</UID><ID>64</ID><Name>Hosting</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.17</WBS><OutlineNumber>1.17</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-10-30T08:00:00</Start><Finish>2026-10-30T17:00:00</Finish><Duration>PT8H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>65</UID><ID>65</ID><Name>Domain</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.18</WBS><OutlineNumber>1.18</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-10-30T08:00:00</Start><Finish>2026-10-30T17:00:00</Finish><Duration>PT8H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+<Task><UID>66</UID><ID>66</ID><Name>Cloud Database</Name><Type>1</Type><IsNull>0</IsNull><WBS>1.19</WBS><OutlineNumber>1.19</OutlineNumber><OutlineLevel>2</OutlineLevel><Start>2026-10-30T08:00:00</Start><Finish>2026-10-30T17:00:00</Finish><Duration>PT8H0M0S</Duration><DurationFormat>7</DurationFormat><Summary>0</Summary><Milestone>0</Milestone><ConstraintType>0</ConstraintType><CalendarUID>-1</CalendarUID>
+</Task>
+</Tasks><Resources>
+<Resource><UID>1</UID><ID>1</ID><Name>Nicho FD</Name><Type>1</Type><MaxUnits>1.00</MaxUnits><StandardRate>130</StandardRate><StandardRateFormat>2</StandardRateFormat><OvertimeRate>162.5</OvertimeRate><OvertimeRateFormat>2</OvertimeRateFormat><CostPerUse>0</CostPerUse><CalendarUID>1</CalendarUID></Resource>
+<Resource><UID>2</UID><ID>2</ID><Name>Nicho BD</Name><Type>1</Type><MaxUnits>1.00</MaxUnits><StandardRate>150</StandardRate><StandardRateFormat>2</StandardRateFormat><OvertimeRate>187.5</OvertimeRate><OvertimeRateFormat>2</OvertimeRateFormat><CostPerUse>0</CostPerUse><CalendarUID>1</CalendarUID></Resource>
+<Resource><UID>3</UID><ID>3</ID><Name>Nicho QA</Name><Type>1</Type><MaxUnits>1.00</MaxUnits><StandardRate>110</StandardRate><StandardRateFormat>2</StandardRateFormat><OvertimeRate>137.5</OvertimeRate><OvertimeRateFormat>2</OvertimeRateFormat><CostPerUse>0</CostPerUse><CalendarUID>1</CalendarUID></Resource>
+<Resource><UID>4</UID><ID>4</ID><Name>Hosting</Name><Type>1</Type><MaxUnits>1.00</MaxUnits><StandardRate>0</StandardRate><StandardRateFormat>2</StandardRateFormat><OvertimeRate>0.0</OvertimeRate><OvertimeRateFormat>2</OvertimeRateFormat><CostPerUse>1500</CostPerUse><CalendarUID>1</CalendarUID></Resource>
+<Resource><UID>5</UID><ID>5</ID><Name>Domain</Name><Type>1</Type><MaxUnits>1.00</MaxUnits><StandardRate>0</StandardRate><StandardRateFormat>2</StandardRateFormat><OvertimeRate>0.0</OvertimeRate><OvertimeRateFormat>2</OvertimeRateFormat><CostPerUse>800</CostPerUse><CalendarUID>1</CalendarUID></Resource>
+<Resource><UID>6</UID><ID>6</ID><Name>Cloud Database</Name><Type>1</Type><MaxUnits>1.00</MaxUnits><StandardRate>0</StandardRate><StandardRateFormat>2</StandardRateFormat><OvertimeRate>0.0</OvertimeRate><OvertimeRateFormat>2</OvertimeRateFormat><CostPerUse>1800</CostPerUse><CalendarUID>1</CalendarUID></Resource>
+</Resources><Assignments>
+<Assignment><UID>1</UID><TaskUID>3</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT2H24M0S</Work><Start>2026-10-30T08:00:00</Start><Finish>2026-10-30T10:24:00</Finish></Assignment>
+<Assignment><UID>2</UID><TaskUID>4</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT1H36M0S</Work><Start>2026-10-30T10:24:00</Start><Finish>2026-10-30T12:00:00</Finish></Assignment>
+<Assignment><UID>3</UID><TaskUID>5</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT1H17M0S</Work><Start>2026-10-30T13:00:00</Start><Finish>2026-10-30T14:17:00</Finish></Assignment>
+<Assignment><UID>4</UID><TaskUID>7</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT2H24M0S</Work><Start>2026-10-30T14:17:00</Start><Finish>2026-10-30T16:41:00</Finish></Assignment>
+<Assignment><UID>5</UID><TaskUID>8</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT1H36M0S</Work><Start>2026-10-30T16:41:00</Start><Finish>2026-10-31T09:17:00</Finish></Assignment>
+<Assignment><UID>6</UID><TaskUID>9</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT1H7M0S</Work><Start>2026-10-31T09:17:00</Start><Finish>2026-10-31T10:24:00</Finish></Assignment>
+<Assignment><UID>7</UID><TaskUID>11</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT3H2M0S</Work><Start>2026-10-31T10:24:00</Start><Finish>2026-10-31T14:26:00</Finish></Assignment>
+<Assignment><UID>8</UID><TaskUID>12</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT2H48M0S</Work><Start>2026-10-31T14:26:00</Start><Finish>2026-11-01T08:14:00</Finish></Assignment>
+<Assignment><UID>9</UID><TaskUID>13</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT1H26M0S</Work><Start>2026-11-01T08:14:00</Start><Finish>2026-11-01T09:41:00</Finish></Assignment>
+<Assignment><UID>10</UID><TaskUID>15</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT3H12M0S</Work><Start>2026-11-01T09:41:00</Start><Finish>2026-11-01T13:53:00</Finish></Assignment>
+<Assignment><UID>11</UID><TaskUID>16</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT2H48M0S</Work><Start>2026-11-01T13:53:00</Start><Finish>2026-11-01T16:41:00</Finish></Assignment>
+<Assignment><UID>12</UID><TaskUID>17</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT1H7M0S</Work><Start>2026-11-01T16:41:00</Start><Finish>2026-11-02T08:48:00</Finish></Assignment>
+<Assignment><UID>13</UID><TaskUID>19</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT2H24M0S</Work><Start>2026-11-02T08:48:00</Start><Finish>2026-11-02T11:12:00</Finish></Assignment>
+<Assignment><UID>14</UID><TaskUID>20</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT2H24M0S</Work><Start>2026-11-02T11:12:00</Start><Finish>2026-11-02T14:36:00</Finish></Assignment>
+<Assignment><UID>15</UID><TaskUID>21</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT2H0M0S</Work><Start>2026-11-02T14:36:00</Start><Finish>2026-11-02T16:36:00</Finish></Assignment>
+<Assignment><UID>16</UID><TaskUID>23</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT2H0M0S</Work><Start>2026-11-02T16:36:00</Start><Finish>2026-11-03T09:36:00</Finish></Assignment>
+<Assignment><UID>17</UID><TaskUID>24</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT1H36M0S</Work><Start>2026-11-03T09:36:00</Start><Finish>2026-11-03T11:12:00</Finish></Assignment>
+<Assignment><UID>18</UID><TaskUID>25</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT0H58M0S</Work><Start>2026-11-03T11:12:00</Start><Finish>2026-11-03T13:10:00</Finish></Assignment>
+<Assignment><UID>19</UID><TaskUID>27</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT2H24M0S</Work><Start>2026-11-03T13:10:00</Start><Finish>2026-11-03T15:34:00</Finish></Assignment>
+<Assignment><UID>20</UID><TaskUID>28</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT0H58M0S</Work><Start>2026-11-03T15:34:00</Start><Finish>2026-11-03T16:31:00</Finish></Assignment>
+<Assignment><UID>21</UID><TaskUID>29</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT0H10M0S</Work><Start>2026-11-03T16:31:00</Start><Finish>2026-11-03T16:41:00</Finish></Assignment>
+<Assignment><UID>22</UID><TaskUID>31</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT2H38M0S</Work><Start>2026-11-03T16:41:00</Start><Finish>2026-11-04T10:19:00</Finish></Assignment>
+<Assignment><UID>23</UID><TaskUID>32</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT1H12M0S</Work><Start>2026-11-04T10:19:00</Start><Finish>2026-11-04T11:31:00</Finish></Assignment>
+<Assignment><UID>24</UID><TaskUID>33</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT0H19M0S</Work><Start>2026-11-04T11:31:00</Start><Finish>2026-11-04T11:50:00</Finish></Assignment>
+<Assignment><UID>25</UID><TaskUID>35</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT8H0M0S</Work><Start>2026-11-04T11:50:00</Start><Finish>2026-11-05T11:50:00</Finish></Assignment>
+<Assignment><UID>26</UID><TaskUID>36</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT8H0M0S</Work><Start>2026-11-05T11:50:00</Start><Finish>2026-11-06T11:50:00</Finish></Assignment>
+<Assignment><UID>27</UID><TaskUID>37</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT2H0M0S</Work><Start>2026-11-06T11:50:00</Start><Finish>2026-11-06T14:50:00</Finish></Assignment>
+<Assignment><UID>28</UID><TaskUID>39</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT4H0M0S</Work><Start>2026-11-06T14:50:00</Start><Finish>2026-11-07T09:50:00</Finish></Assignment>
+<Assignment><UID>29</UID><TaskUID>40</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT4H0M0S</Work><Start>2026-11-07T09:50:00</Start><Finish>2026-11-07T14:50:00</Finish></Assignment>
+<Assignment><UID>30</UID><TaskUID>41</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT2H0M0S</Work><Start>2026-11-07T14:50:00</Start><Finish>2026-11-07T16:50:00</Finish></Assignment>
+<Assignment><UID>31</UID><TaskUID>43</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT8H0M0S</Work><Start>2026-11-07T16:50:00</Start><Finish>2026-11-08T16:50:00</Finish></Assignment>
+<Assignment><UID>32</UID><TaskUID>44</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT8H0M0S</Work><Start>2026-11-08T16:50:00</Start><Finish>2026-11-09T16:50:00</Finish></Assignment>
+<Assignment><UID>33</UID><TaskUID>45</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT4H0M0S</Work><Start>2026-11-09T16:50:00</Start><Finish>2026-11-10T11:50:00</Finish></Assignment>
+<Assignment><UID>34</UID><TaskUID>47</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT24H0M0S</Work><Start>2026-11-10T11:50:00</Start><Finish>2026-11-13T11:50:00</Finish></Assignment>
+<Assignment><UID>35</UID><TaskUID>48</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT24H0M0S</Work><Start>2026-11-13T11:50:00</Start><Finish>2026-11-16T11:50:00</Finish></Assignment>
+<Assignment><UID>36</UID><TaskUID>49</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT8H0M0S</Work><Start>2026-11-16T11:50:00</Start><Finish>2026-11-17T11:50:00</Finish></Assignment>
+<Assignment><UID>37</UID><TaskUID>51</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT24H0M0S</Work><Start>2026-11-17T11:50:00</Start><Finish>2026-11-20T11:50:00</Finish></Assignment>
+<Assignment><UID>38</UID><TaskUID>52</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT24H0M0S</Work><Start>2026-11-20T11:50:00</Start><Finish>2026-11-23T11:50:00</Finish></Assignment>
+<Assignment><UID>39</UID><TaskUID>53</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT8H0M0S</Work><Start>2026-11-23T11:50:00</Start><Finish>2026-11-24T11:50:00</Finish></Assignment>
+<Assignment><UID>40</UID><TaskUID>55</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT12H0M0S</Work><Start>2026-11-24T11:50:00</Start><Finish>2026-11-25T16:50:00</Finish></Assignment>
+<Assignment><UID>41</UID><TaskUID>56</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT12H0M0S</Work><Start>2026-11-25T16:50:00</Start><Finish>2026-11-27T11:50:00</Finish></Assignment>
+<Assignment><UID>42</UID><TaskUID>57</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT4H0M0S</Work><Start>2026-11-27T11:50:00</Start><Finish>2026-11-27T16:50:00</Finish></Assignment>
+<Assignment><UID>43</UID><TaskUID>59</TaskUID><ResourceUID>1</ResourceUID><Units>1</Units><Work>PT12H0M0S</Work><Start>2026-11-27T16:50:00</Start><Finish>2026-11-29T11:50:00</Finish></Assignment>
+<Assignment><UID>44</UID><TaskUID>60</TaskUID><ResourceUID>2</ResourceUID><Units>1</Units><Work>PT12H0M0S</Work><Start>2026-11-29T11:50:00</Start><Finish>2026-11-30T16:50:00</Finish></Assignment>
+<Assignment><UID>45</UID><TaskUID>61</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT4H0M0S</Work><Start>2026-11-30T16:50:00</Start><Finish>2026-12-01T11:50:00</Finish></Assignment>
+<Assignment><UID>46</UID><TaskUID>63</TaskUID><ResourceUID>3</ResourceUID><Units>1</Units><Work>PT24H0M0S</Work><Start>2026-12-01T11:50:00</Start><Finish>2026-12-04T11:50:00</Finish></Assignment>
+<Assignment><UID>47</UID><TaskUID>64</TaskUID><ResourceUID>4</ResourceUID><Units>1</Units><Work>PT8H0M0S</Work><Start>2026-10-30T08:00:00</Start><Finish>2026-10-30T17:00:00</Finish></Assignment>
+<Assignment><UID>48</UID><TaskUID>65</TaskUID><ResourceUID>5</ResourceUID><Units>1</Units><Work>PT8H0M0S</Work><Start>2026-10-30T08:00:00</Start><Finish>2026-10-30T17:00:00</Finish></Assignment>
+<Assignment><UID>49</UID><TaskUID>66</TaskUID><ResourceUID>6</ResourceUID><Units>1</Units><Work>PT8H0M0S</Work><Start>2026-10-30T08:00:00</Start><Finish>2026-10-30T17:00:00</Finish></Assignment>
+</Assignments></Project>

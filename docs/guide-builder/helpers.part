@@ -1,0 +1,54 @@
+const fs = require('fs');
+const {
+  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, ShadingType,
+  HeadingLevel, AlignmentType, LevelFormat, BorderStyle, PageBreak, Footer, PageNumber,
+} = require('docx');
+
+const RED = 'C3324B', INK = '121212', GRAY = '595959', LINE = 'D0D0D0', TINT = 'F4F1EA';
+const W = 9360; // content width in DXA (A4 with 1" margins is 9026; we use Letter-ish margins below)
+
+// ---------- small helpers ----------
+const runs = (text) => {
+  // **bold** and `code` inside a string
+  const out = [];
+  const re = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+  let last = 0, m;
+  while ((m = re.exec(text))) {
+    if (m.index > last) out.push(new TextRun(text.slice(last, m.index)));
+    const t = m[0];
+    if (t.startsWith('**')) out.push(new TextRun({ text: t.slice(2, -2), bold: true }));
+    else out.push(new TextRun({ text: t.slice(1, -1), font: 'Consolas', size: 19, color: RED }));
+    last = m.index + t.length;
+  }
+  if (last < text.length) out.push(new TextRun(text.slice(last)));
+  return out;
+};
+const P = (text, opts = {}) => new Paragraph({ children: runs(text), spacing: { after: 120 }, ...opts });
+const H1 = (text) => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun(text)] });
+const H2 = (text) => new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(text)] });
+const B = (text, level = 0) => new Paragraph({ numbering: { reference: 'bullets', level }, children: runs(text), spacing: { after: 60 } });
+const N = (text, ref = 'steps') => new Paragraph({ numbering: { reference: ref, level: 0 }, children: runs(text), spacing: { after: 60 } });
+const SAY = (text) => new Paragraph({
+  children: [new TextRun({ text: 'Say it like this: ', bold: true, color: RED }), ...runs(text)],
+  shading: { type: ShadingType.CLEAR, fill: TINT, color: 'auto' },
+  border: { left: { style: BorderStyle.SINGLE, size: 18, color: RED, space: 8 } },
+  spacing: { before: 80, after: 160 }, indent: { left: 160, right: 160 },
+});
+const border = { style: BorderStyle.SINGLE, size: 4, color: LINE };
+const borders = { top: border, bottom: border, left: border, right: border };
+function table(headers, rows, widths) {
+  const cell = (text, w, head) => new TableCell({
+    width: { size: w, type: WidthType.DXA }, borders,
+    shading: head ? { type: ShadingType.CLEAR, fill: INK, color: 'auto' } : undefined,
+    margins: { top: 60, bottom: 60, left: 100, right: 100 },
+    children: [new Paragraph({ children: head ? [new TextRun({ text, bold: true, color: 'FFFFFF', size: 19 })] : runs(text).map(r => r), spacing: { after: 0 } })],
+  });
+  return new Table({
+    width: { size: widths.reduce((a, b) => a + b, 0), type: WidthType.DXA }, columnWidths: widths,
+    rows: [new TableRow({ tableHeader: true, children: headers.map((h, i) => cell(h, widths[i], true)) }),
+           ...rows.map(r => new TableRow({ cantSplit: true, children: r.map((c, i) => cell(c, widths[i], false)) }))],
+  });
+}
+const gap = () => new Paragraph({ children: [], spacing: { after: 80 } });
+const pageBreak = () => new Paragraph({ children: [new PageBreak()] });
+

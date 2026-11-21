@@ -1,0 +1,234 @@
+// ---------- extra helpers for this guide ----------
+const CODE = (lines) => lines.split('\n').map((line, i, all) => new Paragraph({
+  children: [new TextRun({ text: line || ' ', font: 'Consolas', size: 18, color: INK })],
+  shading: { type: ShadingType.CLEAR, fill: 'EFEFEF', color: 'auto' },
+  spacing: { before: i === 0 ? 60 : 0, after: i === all.length - 1 ? 140 : 0 },
+  indent: { left: 160, right: 160 },
+}));
+const NOTE = (label, text) => new Paragraph({
+  children: [new TextRun({ text: label + ' ', bold: true }), ...runs(text)],
+  shading: { type: ShadingType.CLEAR, fill: 'FFF4E5', color: 'auto' },
+  border: { left: { style: BorderStyle.SINGLE, size: 18, color: 'E8A33D', space: 8 } },
+  spacing: { before: 80, after: 160 }, indent: { left: 160, right: 160 },
+});
+
+// ---------- content ----------
+const body = [];
+
+body.push(new Paragraph({ spacing: { after: 60 }, children: [new TextRun({ text: 'xpera CRM · Project structure and migrations', size: 44, bold: true, color: INK })] }));
+body.push(new Paragraph({ spacing: { after: 60 }, children: [new TextRun({ text: 'What each project holds, what it does, and how I built the databases with EF Core migrations', size: 24, color: GRAY })] }));
+body.push(new Paragraph({ spacing: { after: 240 }, border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: RED, space: 6 } }, children: [new TextRun({ text: 'Nicho Lescano · BSIT 3 · IT13L (3462) · Instructor: Renz Arriola · November 2026', size: 20, color: GRAY })] }));
+
+// 1
+body.push(H1('1. The big picture'));
+body.push(P('The solution `Xpera.slnx` is split into **four projects**. Each one has one job, so a change in one place does not break the others. This is called **separation of concerns** (also known as a layered or "clean" architecture).'));
+body.push(table(['Project', 'Its one job', 'Holds'], [
+  ['**Xpera**', 'The user interface (what people see and click)', 'Forms, screens, custom controls, colors, fonts'],
+  ['**Xpera.domain**', 'The models: what a Customer, Sale, Company… is', 'Entity classes, fixed choices, peso format'],
+  ['**Xpera.infrastructure**', 'Everything that talks to the database', 'DbContexts, migrations, data access, SQL scripts'],
+  ['**Xpera.api**', 'A web API so other apps can use the same data', 'Controllers (one per feature), Program.cs, appsettings.json'],
+], [2300, 3600, 3460]));
+body.push(gap());
+body.push(H2('Who uses whom (project references)'));
+body.push(table(['Project', 'References', 'Why'], [
+  ['Xpera.domain', '(nothing)', 'The models are plain C#. They do not need to know about screens or databases.'],
+  ['Xpera.infrastructure', 'Xpera.domain', 'It saves and loads the models, so it must know them.'],
+  ['Xpera.api', 'Xpera.infrastructure + Xpera.domain', 'Controllers load models through the infrastructure and send them out as JSON.'],
+  ['Xpera (UI)', 'Xpera.infrastructure + Xpera.domain', 'Screens show models and call the infrastructure to load and save.'],
+], [2300, 3000, 4060]));
+body.push(P('The arrows only point **toward** the domain. The domain never points back. That is why the domain has no packages at all.', { spacing: { before: 120, after: 120 } }));
+body.push(P('The desktop app calls the infrastructure **directly**, so it does not need the API running. The API uses the **same** infrastructure, so both always read the same data with the same rules.'));
+body.push(SAY('"Xpera shows things, Xpera.domain describes things, Xpera.infrastructure stores things, and Xpera.api shares things. The domain is in the middle and depends on nothing."'));
+
+// 2
+body.push(pageBreak());
+body.push(H1('2. Xpera (the UI project)'));
+body.push(P('A **Windows Forms** app (.NET 10). It only shows data and reacts to clicks. It never writes SQL itself.'));
+body.push(table(['Folder / file', 'What it holds', 'What it does'], [
+  ['`Program.cs`', 'The start of the app', 'Loads the Inter font and opens the sign-in window.'],
+  ['`LoginForm`', 'Sign-in window (+ Designer file)', 'Store code → finds the store in the Master; username + password → signs in.'],
+  ['`MainForm`', 'Sidebar + page area (+ Designer)', 'Builds the menu for the signed-in role and swaps the screens.'],
+  ['`Screens/`', 'One UserControl per page', 'Sales, Payments, Products, Customers, Inquiries, Complaints, Feedback, Users.'],
+  ['`Controls/`', 'Custom controls', 'Card, RoundButton, InputBox, SearchBox, Pager, StatStrip, ModalForm, PickerPopup…'],
+  ['`EntryForm`, `Notice`', 'Pop-up form and pop-up message', 'Every "Add…" form and every message uses these two.'],
+  ['`Ui.cs`, `Typography.cs`, `Sizes.cs`', 'Shared styles', 'Colors, dark mode, fonts, sizes in one place, reused by every screen.'],
+  ['`Theme/` (linked)', 'Brand color model', 'Tints, Tones, Shades of Signal Red and Carbon.'],
+  ['`Fonts/`', 'Inter font files', 'Copied next to the app so it looks the same on every PC.'],
+], [2500, 2900, 3960]));
+body.push(P('Packages: **none**. It gets the database packages through Xpera.infrastructure.', { spacing: { before: 120, after: 120 } }));
+
+body.push(H1('3. Xpera.domain (the models)'));
+body.push(P('Plain C# classes. Each **entity** describes one table: one property = one column. This is where the user\'s own `Company` and `CompanyDatabase` (the teacher\'s format) live, and the other models follow the same style.'));
+body.push(table(['Entity (entities/)', 'Table', 'Database', 'Use case'], [
+  ['`Company`', 'Companies', 'Xpera_Master', 'UC-13 Manage Tenants (each store)'],
+  ['`CompanyDatabase`', 'CompanyDatabases', 'Xpera_Master', 'Which database belongs to which store'],
+  ['`Plan`', 'Plans', 'Xpera_Master', 'Plan A, B, C'],
+  ['`Subscription`', 'Subscriptions', 'Xpera_Master', 'UC-14 Manage Subscriptions'],
+  ['`User`', 'Users', 'each store', 'UC-01 Staff accounts'],
+  ['`Product`', 'Products', 'each store', 'UC-02 Products'],
+  ['`Customer`', 'Customers', 'each store', 'UC-03 Customers'],
+  ['`Sale`, `SaleItem`', 'Sales, SaleItems', 'each store', 'UC-04 Record Sale'],
+  ['`Payment`', 'Payments', 'each store', 'UC-05 Record Payment'],
+  ['`Inquiry`', 'Inquiries', 'each store', 'UC-06 Inquiries'],
+  ['`Complaint`', 'Complaints', 'each store', 'UC-07 Complaints'],
+  ['`Feedback`', 'Feedback', 'each store', 'UC-08 Feedback'],
+  ['`StoreInfo`, `SignInResult`', '(not tables)', '–', 'The signed-in store, and the result of a sign-in'],
+], [2400, 1900, 1700, 3360]));
+body.push(P('Also here: `Choices.cs` (the fixed dropdown options, like the inquiry statuses) and `Money.cs` (how pesos are written, ₱45,200). Packages: **none**.', { spacing: { before: 120, after: 120 } }));
+body.push(SAY('"An entity is the blueprint of a table. EF Core reads these classes and builds the real tables from them."'));
+
+// 4
+body.push(pageBreak());
+body.push(H1('4. Xpera.infrastructure (the database layer)'));
+body.push(H2('data/ (the C# that talks to SQL Server)'));
+body.push(table(['File', 'What it does'], [
+  ['`MasterCrmDbContext`', 'The teacher-format DbContext for the Master. Inherits **IdentityDbContext**, so it also has the AspNet login tables. Lists Companies, CompanyDatabases, Plans, Subscriptions and their rules (keys, lengths, unique codes, foreign keys).'],
+  ['`TenantCrmDbContext`', 'The DbContext for **one store\'s** database. Lists Users, Products, Customers, Sales, SaleItems, Payments, Inquiries, Complaints, Feedback, with defaults (e.g. today\'s date) and CHECK rules (e.g. rating 1 to 5).'],
+  ['`DbContexts`', 'Opens either DbContext from the desktop app (WinForms has no Program.cs services). Also holds `TenantCrmDbContextFactory`, which lets Add-Migration / Update-Database find the store context.'],
+  ['`Db.cs`', 'The connection rules (LocalDB on this PC, or an online server from `%USERPROFILE%\\.xpera\\databases.txt`) and parameterized queries, so typed text can never become SQL.'],
+  ['`MasterDb`', 'Uses **MasterCrmDbContext**: finds a store by its code (Companies + CompanyDatabases + its active Subscription) and checks the Super Admin\'s password with Identity\'s PasswordHasher.'],
+  ['`StoreDb`', 'One method per screen action (SaveSale, RecordPayment, AddInquiry…). Holds `Session`: who is signed in, to which store.'],
+  ['`StoreRecords`', 'Uses **TenantCrmDbContext** to read whole models (with LINQ) for the API.'],
+], [2500, 6860]));
+body.push(H2('Migrations/ and Database/'));
+body.push(B('`Migrations/` = the Master migrations: `InitialMasterCrm` (mine) and `AddPlansAndSubscriptions`, plus `MasterCrmDbContextModelSnapshot` (EF\'s memory of the last model).'));
+body.push(B('`Migrations/Tenant/` = `InitialTenantCrm` for the store databases (it also creates the two views CustomerBalances and CustomerSummary).'));
+body.push(B('`Database/` = sample-data scripts: `01-master-data.sql` (stores, plans, subscriptions, Super Admin), `03-store-sample-data.sql` and `04-store-transactions.sql` (staff, products, customers, 210 sales per store). `00` and `02` are the migrations as SQL, used only by `setup.ps1`.'));
+body.push(H2('Packages'));
+body.push(table(['Package', 'Why it is here'], [
+  ['Microsoft.EntityFrameworkCore.SqlServer', 'EF Core for SQL Server (the DbContexts).'],
+  ['Microsoft.EntityFrameworkCore.Design + Tools', 'Add-Migration, Update-Database, Drop-Database commands.'],
+  ['Microsoft.AspNetCore.Identity.EntityFrameworkCore', 'IdentityDbContext and the AspNet login tables (Super Admin).'],
+  ['System.Security.Cryptography.Pkcs 10.0.14', 'Pins a safe version. EF SqlServer pulls in an older one with a known vulnerability.'],
+], [4200, 5160]));
+
+// 5
+body.push(H1('5. Xpera.api (the web API)'));
+body.push(B('`Program.cs` registers **MasterCrmDbContext** with `AddDbContext` and reads the connection string `MasterCrm` from `appsettings.json` (`Xpera_Master` on `(localdb)\\MSSQLLocalDB`). This is why the API is the **startup project** for migrations.'));
+body.push(B('`Controllers/`: one controller per feature, all built on `StoreControllerBase`. Every request sends three headers (`X-Store-Code`, `X-Username`, `X-Password`); the API signs in exactly like the app and checks the role.'));
+body.push(table(['Controller', 'Address', 'Who may change data'], [
+  ['Account', 'GET api/me', 'anyone signed in'],
+  ['Users', 'api/users', 'Admin only'],
+  ['Products', 'api/products, PUT …/{id}/availability', 'Admin adds; Admin or Staff change availability'],
+  ['Customers', 'api/customers, GET …/{id}/card', 'anyone signed in'],
+  ['Sales', 'api/sales', 'Admin or Cashier (prices always come from the database)'],
+  ['Payments', 'api/payments', 'Admin or Cashier'],
+  ['Inquiries, Complaints', 'api/inquiries, api/complaints, PUT …/{id}/status', 'anyone signed in'],
+  ['Feedback', 'api/feedback', 'anyone signed in'],
+], [2300, 3900, 3160]));
+body.push(P('`Xpera.api.http` has ready-made sample requests you can send from Visual Studio.', { spacing: { before: 120, after: 120 } }));
+
+// 6
+body.push(pageBreak());
+body.push(H1('6. The databases (multi-tenant)'));
+body.push(table(['Database', 'Made by', 'Holds'], [
+  ['**Xpera_Master**', 'MasterCrmDbContext', 'Companies, CompanyDatabases, Plans, Subscriptions, AspNet… (Identity), __EFMigrationsHistory'],
+  ['**Xpera_TenantA**', 'TenantCrmDbContext', 'PixelZone (PIXEL01, Plan A): Users, Products, Customers, Sales, SaleItems, Payments, Inquiries, Complaints, Feedback + 2 views'],
+  ['**Xpera_TenantB**', 'TenantCrmDbContext', 'Arcade Supply (ARCADE01, Plan B): same tables'],
+  ['**Xpera_TenantC**', 'TenantCrmDbContext', 'Gaming Hub (HUB01, Plan C): same tables'],
+], [2200, 2300, 4860]));
+body.push(H2('What happens at sign-in'));
+['The user types `PIXEL01`. `MasterDb` opens **Xpera_Master** through MasterCrmDbContext.',
+ 'It finds PixelZone in **Companies**, its database (`Xpera_TenantA`) in **CompanyDatabases**, and its plan (A, Micro) in **Subscriptions**.',
+ 'The username and password are checked in **Xpera_TenantA**\'s Users table (3 wrong tries lock the account).',
+ 'From then on, every screen reads and writes only **Xpera_TenantA**. Another store can never see this data.',
+].forEach(s => body.push(N(s, 'signin')));
+body.push(SAY('"There is one Master that knows every store, and every store has its own database with the same tables. The store code at sign-in decides which database opens."'));
+
+// 7
+body.push(H1('7. How I did the migrations, step by step'));
+body.push(H2('Step 1. Write the entities'));
+body.push(P('A class per table in `Xpera.domain/entities`, for example:'));
+body.push(...CODE(`public class Company
+{
+    public int CompanyId { get; set; }
+    public string CompanyCode { get; set; } = string.Empty;
+    public string CompanyName { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}`));
+body.push(H2('Step 2. Write the DbContext'));
+body.push(P('List each table as a `DbSet`, then set the rules in `OnModelCreating`:'));
+body.push(...CODE(`public DbSet<Company> Companies => Set<Company>();
+
+builder.Entity<Company>(entity =>
+{
+    entity.HasKey(x => x.CompanyId);                 // primary key
+    entity.Property(x => x.CompanyCode).HasMaxLength(50).IsRequired();
+    entity.HasIndex(x => x.CompanyCode).IsUnique();  // no two stores with the same code
+});`));
+body.push(H2('Step 3. Add-Migration (write the change as C#)'));
+body.push(P('Package Manager Console, **Default project = Xpera.infrastructure**:'));
+body.push(...CODE(`Add-Migration InitialMasterCrm -Context MasterCrmDbContext -StartupProject Xpera.api
+Add-Migration AddPlansAndSubscriptions -Context MasterCrmDbContext -StartupProject Xpera.api
+Add-Migration InitialTenantCrm -Context TenantCrmDbContext -StartupProject Xpera.api -OutputDir Migrations/Tenant`));
+body.push(P('EF compares the classes with the last snapshot and writes a migration file. Its `Up()` method holds `CreateTable(...)` for each new table; `Down()` undoes it.'));
+body.push(H2('Step 4. Update-Database (run it on SQL Server)'));
+body.push(...CODE(`Update-Database -Context MasterCrmDbContext -StartupProject Xpera.api
+Update-Database -Context TenantCrmDbContext -StartupProject Xpera.api
+Update-Database -Context TenantCrmDbContext -StartupProject Xpera.api -Connection "Server=(localdb)\\MSSQLLocalDB;Database=Xpera_TenantB;Trusted_Connection=True;TrustServerCertificate=true"
+Update-Database -Context TenantCrmDbContext -StartupProject Xpera.api -Connection "Server=(localdb)\\MSSQLLocalDB;Database=Xpera_TenantC;Trusted_Connection=True;TrustServerCertificate=true"`));
+body.push(B('EF creates the database if it does not exist, runs each migration, and writes it into **__EFMigrationsHistory**, so it never runs twice.'));
+body.push(B('The tenant command without `-Connection` builds **Xpera_TenantA** (the default in TenantCrmDbContextFactory). `-Connection` points the **same** migration at TenantB and TenantC.'));
+body.push(H2('Step 5. Fill the tables with sample data (SSMS)'));
+['Open the script with **File → Open → File** (Ctrl + O). A newly opened file starts **disconnected**: click the plug icon and connect to `(localdb)\\MSSQLLocalDB` (Windows Authentication, Trust Server Certificate).',
+ 'Pick the database in the toolbar dropdown next to Execute, then press **Execute**.',
+ '`01-master-data.sql` on **Xpera_Master**.',
+ '`03-store-sample-data.sql` on **Xpera_TenantA**, then B, then C.',
+ '`04-store-transactions.sql` on **Xpera_TenantA**, then B, then C (always after 03).',
+ 'Check: `SELECT COUNT(*) FROM Sales` on TenantA gave **210** sales (with 53 payments and 40 customers).',
+].forEach(s => body.push(N(s, 'seed')));
+body.push(H2('Step 6. One login per database (SSMS)'));
+body.push(P('In a New Query on `master` I made a SQL login for each database and allowed it into **only** that database:'));
+body.push(...CODE(`CREATE LOGIN xpera_tenantA_login WITH PASSWORD = '<my password>', CHECK_POLICY = OFF;
+USE Xpera_TenantA;
+CREATE USER xpera_tenantA_login FOR LOGIN xpera_tenantA_login;
+ALTER ROLE db_owner ADD MEMBER xpera_tenantA_login;`));
+body.push(P('Then each **Registered Server** (MasterXpera, TenantA_Xpera, TenantB_Xpera, TenantC_Xpera) got: Server name `(localdb)\\MSSQLLocalDB`, **SQL Server Authentication** with its login, **Connect to database** = its own database, and Trust server certificate ticked. The registered server name is only a nickname for the list.'));
+body.push(P('**Test:** connected as TenantA_Xpera, opening Xpera_TenantB says **"The database Xpera_TenantB is not accessible."** That is tenant isolation working.'));
+body.push(SAY('"A login gets you into the server; a user inside a database lets that login into that one database. TenantA\'s login simply has no user in TenantB, so it is refused."'));
+body.push(H2('Step 7. Run the app'));
+body.push(P('Right-click **Xpera** → Debug → Start New Instance, then sign in with `PIXEL01` / `owner` / `xpera123`. The sidebar shows **PixelZone · TENANT A · MICRO**, read from the new Master.'));
+
+// 8
+body.push(pageBreak());
+body.push(H1('8. Problems I hit, and what they taught me'));
+body.push(table(['What happened', 'Why', 'Fix / lesson'], [
+  ['"Your startup project \'Xpera\' doesn\'t reference Microsoft.EntityFrameworkCore.Design"', 'EF commands run through the startup project. Xpera (WinForms) has no Design package, on purpose.', 'Add `-StartupProject Xpera.api`, or set Xpera.api as the startup project while running EF commands.'],
+  ['"There is already an object named \'Plans\'"', 'SQL Server ignores upper/lower case in names, so `Xpera_Master` was the same as my old `xpera_master`, which already had a Plans table.', 'Delete the old databases first. With migrations, **EF must own the database**; never make the same tables by hand.'],
+  ['SSMS "network path was not found" (error 53)', 'The registered servers pointed to a server name this PC does not have.', 'Use `(localdb)\\MSSQLLocalDB`, the SQL Server that comes with Visual Studio.'],
+  ['The database dropdown was greyed out', 'A file opened with Ctrl + O starts disconnected; each tab has its own connection.', 'Click the plug icon to connect that tab once.'],
+  ['TenantA\'s login can see the names of other databases', 'SQL Server shows every login the list of names, but not what is inside.', 'Opening one gives "not accessible". Seeing the door is not opening it.'],
+], [2900, 3300, 3160]));
+
+// 9
+body.push(H1('9. Command cheat sheet'));
+body.push(table(['Command (Package Manager Console)', 'What it does'], [
+  ['`Add-Migration <Name> -Context <X> -StartupProject Xpera.api`', 'Writes a new migration from the changes in the entities and DbContext.'],
+  ['`Update-Database -Context <X> -StartupProject Xpera.api`', 'Runs every migration not yet in __EFMigrationsHistory.'],
+  ['`… -Connection "<connection string>"`', 'Runs it on another database (TenantB, TenantC).'],
+  ['`Remove-Migration -Context <X> -StartupProject Xpera.api`', 'Deletes the last migration if it was not applied yet.'],
+  ['`Drop-Database -Context <X> -StartupProject Xpera.api`', 'Deletes that database completely (asks first).'],
+  ['`Get-Migration -Context <X> -StartupProject Xpera.api`', 'Lists the migrations and which ones are applied.'],
+], [4900, 4460]));
+body.push(H2('Adding a new table later (for example Lab 2 retention campaigns)'));
+['Add the entity class in `Xpera.domain/entities` (e.g. `Campaign.cs`).',
+ 'Add `public DbSet<Campaign> Campaigns => Set<Campaign>();` and its rules in `TenantCrmDbContext`.',
+ '`Add-Migration AddCampaigns -Context TenantCrmDbContext -StartupProject Xpera.api -OutputDir Migrations/Tenant`',
+ '`Update-Database` for TenantA, then with `-Connection` for TenantB and TenantC.',
+ 'Refresh SSMS: the new table is there, in every store.',
+].forEach(s => body.push(N(s, 'addtable')));
+
+// 10
+body.push(H1('10. Questions the teacher may ask'));
+body.push(table(['Question', 'Answer'], [
+  ['What is a migration?', 'C# code that describes a change to the database. Add-Migration writes it; Update-Database runs it. The database can be rebuilt from code at any time.'],
+  ['What is a DbContext?', 'The class that connects my entities to the database: which tables exist and their rules. I have two: MasterCrmDbContext and TenantCrmDbContext.'],
+  ['Why two DbContexts?', 'The Master and the stores hold different tables. One store migration builds every store\'s database.'],
+  ['What is __EFMigrationsHistory?', 'EF\'s list of migrations already applied, so it never runs one twice.'],
+  ['Why is the API the startup project for migrations?', 'EF reads the connection string and services from the startup project. The API has appsettings.json, Program.cs (AddDbContext), and the Design package.'],
+  ['Why IdentityDbContext?', 'It adds ready-made, secure login tables (AspNetUsers…). The Super Admin signs in through them, and passwords are hashed by Identity.'],
+  ['How are tenants kept apart?', 'Each store has its own database, the Master says which one, and each SQL login can only open its own database.'],
+  ['Where is the data access?', 'Only in Xpera.infrastructure. The UI and the API never write SQL themselves.'],
+  ['Why does the domain have no packages?', 'It only describes things. Keeping it free of database and UI code means it can be reused anywhere.'],
+], [3200, 6160]));

@@ -1,0 +1,570 @@
+<title>xpera Lab Walkthrough</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600&display=swap">
+<style>
+/* Layout: a control strip (lab + user) on top, a "what's new" note, then the app window itself — sidebar + screen. */
+:root {
+  /* Brand: Signal Red #F43F5E and Carbon #121212, with their tints and shades. Bone #F4F1EA is background only. */
+  --red: #F43F5E; --red-ink: #C3324B; --red-soft: #FEECEF; --red-line: #FBB2BF;
+  --carbon: #121212; --bone: #F4F1EA;
+  --page: #E7E7E7; --surface: #FFFFFF; --app: #F4F1EA;
+  --ink: #121212; --muted: #595959; --soft: #898989; --line: #E7E7E7; --line-strong: #D0D0D0;
+  --side: #121212; --side-ink: #D0D0D0; --side-dim: #717171;
+  /* Status colors come from the brand too: done = Carbon tint, needs attention = red. */
+  --good: #121212; --good-soft: #E7E7E7; --warn: #C3324B; --warn-soft: transparent; --info: #595959; --info-soft: transparent;
+  --display: "Sora", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page: #0E0E0E; --surface: #1D1D1D; --app: #121212; --ink: #FFFFFF; --muted: #B8B8B8; --soft: #898989; --line: #2A2A2A; --line-strong: #414141;
+  --red-soft: #310D13; --red-ink: #F88C9E; --red-line: #922638; --side: #050505;
+  --good: #FFFFFF; --good-soft: #2A2A2A; --warn: #F88C9E; --info: #B8B8B8; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --page: #0E0E0E; --surface: #1D1D1D; --app: #121212; --ink: #FFFFFF; --muted: #B8B8B8; --soft: #898989; --line: #2A2A2A; --line-strong: #414141;
+  --red-soft: #310D13; --red-ink: #F88C9E; --red-line: #922638; --side: #050505;
+  --good: #FFFFFF; --good-soft: #2A2A2A; --warn: #F88C9E; --info: #B8B8B8; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--page); color: var(--ink); font: 15px/1.5 var(--body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 48px }
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 18px }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: -0.02em; margin: 0; text-wrap: balance }
+.brand { display: flex; align-items: center; gap: 12px }
+.brand > div { min-width: 0 }
+.brand > svg { flex: none }
+.brand h1 { font-size: clamp(20px, 3.2vw, 26px) }
+.brand p { margin: 2px 0 0; color: var(--muted); font-size: 14px }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px }
+.ctl { display: grid; gap: 6px; min-width: 0 }
+.ctl > span { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.seg { display: flex; flex-wrap: wrap; gap: 4px; background: var(--app); border-radius: 12px; padding: 4px }
+.seg button { font: 600 13px var(--body); color: var(--muted); background: transparent; border: 0; border-radius: 9px; padding: 8px 12px; cursor: pointer }
+.seg button[aria-pressed="true"] { background: var(--carbon); color: #F4F1EA }
+.seg button:disabled { opacity: .4; cursor: not-allowed }
+.seg button:focus-visible, .nav button:focus-visible, .btn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px }
+.note { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px }
+.note h2 { font-size: 18px; margin-bottom: 6px }
+.note ul { margin: 0; padding-left: 18px; color: var(--muted); display: grid; gap: 4px }
+.note .why { background: var(--red-soft); border-radius: 12px; padding: 12px 14px; font-size: 14px; color: var(--ink) }
+.note .why b { color: var(--red-ink) }
+/* App window */
+.app { display: grid; grid-template-columns: 220px minmax(0, 1fr); border-radius: 20px; overflow: hidden; border: 1px solid var(--line); background: var(--app); min-height: 680px }
+.side { background: var(--side); color: var(--side-ink); padding: 22px 14px; display: flex; flex-direction: column; gap: 4px }
+.side .logo { display: flex; align-items: center; gap: 10px; padding: 0 8px 18px; color: #F4F1EA; font: 600 22px var(--display); letter-spacing: -0.04em }
+.nav { display: flex; flex-direction: column; gap: 2px }
+.nav button { all: unset; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 10px; font: 500 14px var(--body); color: var(--side-ink); cursor: pointer }
+.nav button:hover { background: #2A2A2A }
+.nav button[aria-current="page"] { background: var(--red); color: #121212; font-weight: 600 }
+.nav button.locked { color: var(--side-dim); cursor: help }
+.nav .lk { font-size: 10px; font-weight: 600; letter-spacing: .04em; border: 1px solid #414141; color: #898989; border-radius: 999px; padding: 1px 7px }
+.side .store { margin-top: auto; padding: 14px 8px 0; display: grid; gap: 4px; font-size: 12px; color: #898989 }
+.side .store b { color: #F4F1EA; font-size: 13px }
+.planchip { justify-self: start; background: #2A2A2A; color: #F6657E; border-radius: 999px; padding: 2px 8px; font-weight: 600; font-size: 11px }
+.main { padding: 24px 28px; display: grid; gap: 16px; align-content: start; min-width: 0 }
+.top { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center }
+.top h3 { font-size: 24px }
+.top p { margin: 2px 0 0; color: var(--muted); font-size: 13px }
+.db { display: inline-flex; gap: 6px; align-items: center; font: 500 12px var(--body); color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px }
+.db svg { flex: none }
+.btn { font: 600 13px var(--body); border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 10px; padding: 8px 14px; cursor: pointer }
+.btn.primary { background: var(--red); border-color: var(--red); color: #121212 }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; min-width: 0 }
+.card h4 { margin: 0 0 2px; font: 600 14px var(--body) }
+.card .sub { margin: 0 0 10px; color: var(--muted); font-size: 12px }
+.tbl { overflow-x: auto }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums }
+th { text-align: left; font-weight: 500; color: var(--soft); padding: 6px 8px; white-space: nowrap }
+td { padding: 10px 8px; border-top: 1px solid var(--line); white-space: nowrap }
+td:first-child { font-weight: 600 }
+.pill { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: 12px; font-weight: 500 }
+.p-red { background: var(--red-soft); color: var(--red-ink) } .p-gray { background: var(--line); color: var(--muted) } .p-good { background: var(--good-soft); color: var(--good); font-weight: 600 } .p-good::before { content: "✓ " } .p-warn { background: var(--warn-soft); color: var(--warn); box-shadow: inset 0 0 0 1px var(--red-line) } .p-info { background: var(--info-soft); color: var(--info); box-shadow: inset 0 0 0 1px var(--line-strong) } .p-dark { background: var(--ink); color: var(--surface) }
+.stars { color: var(--red); letter-spacing: 1px } .stars i { color: var(--line); font-style: normal }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 2px }
+.kpi span { font-size: 12px; color: var(--muted) } .kpi b { font: 600 22px var(--display); letter-spacing: -0.03em } .kpi small { font-size: 11px; color: var(--muted) }
+.kpi.hot { background: var(--carbon); border-color: var(--carbon) } .kpi.hot span, .kpi.hot small { color: #B8B8B8 } .kpi.hot b { color: var(--red) }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px }
+.chart svg { width: 100%; height: auto; display: block }
+.chart text { fill: var(--muted); font: 11px var(--body) }
+.g-line { stroke: var(--line) } .c-red { fill: var(--red); stroke: var(--red) } .c-ink { fill: var(--ink); stroke: var(--ink) }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--muted); margin-top: 6px } .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px }
+.label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.empty { display: grid; place-items: center; text-align: center; gap: 8px; padding: 48px 20px; color: var(--muted) }
+.empty b { color: var(--ink); font: 600 18px var(--display) }
+.branchsel { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted) }
+select { font: 500 13px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px }
+.toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--carbon); color: #F4F1EA; border-radius: 12px; padding: 10px 14px; font-size: 13px; opacity: 0; transform: translateY(8px); transition: .2s; pointer-events: none }
+.toast.show { opacity: 1; transform: none }
+/* Record sale: who and what on the left, payment on the right (from the Figma design) */
+.co-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(250px, 1fr); gap: 14px; align-items: start }
+.co-main { display: grid; gap: 14px; min-width: 0 }
+.cust { display: flex; gap: 12px; align-items: center; background: var(--app); border-radius: 12px; padding: 12px 14px }
+.avatar { flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--carbon); color: var(--bone); display: grid; place-items: center; font: 600 14px var(--display) }
+.cust-name { font-weight: 600 }
+.cust-meta { font-size: 12px; color: var(--muted) }
+.linksel { margin-left: auto; border: 0; background: transparent; color: var(--red-ink); font: 600 13px var(--body); padding: 4px; cursor: pointer; max-width: 120px }
+.addsel { width: 100%; border: 1px dashed var(--line-strong); background: transparent; color: var(--muted); border-radius: 10px; padding: 11px 12px; font: 500 13px var(--body); cursor: pointer }
+.qty { display: inline-flex; gap: 8px; align-items: center }
+.qty button, .xbtn { font: 600 13px var(--body); width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); cursor: pointer }
+.pay { display: grid; gap: 14px }
+.pay .seg { display: grid; grid-template-columns: 1fr 1fr }
+.pay input[type=date] { font: 500 13px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 10px; padding: 8px 10px; width: 100% }
+.sumrows { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; font-size: 13px; font-variant-numeric: tabular-nums; border-top: 1px solid var(--line); padding-top: 12px }
+.sumrows .muted { color: var(--muted) }
+.sumrows .total { font: 600 15px var(--body); align-self: end }
+.sumrows .total-v { font: 600 24px var(--display); letter-spacing: -0.02em }
+.note-red { background: var(--red-soft); color: var(--red-ink); border-radius: 10px; padding: 10px 12px; font-size: 12px }
+.btn.wide { width: 100%; padding: 12px 14px; font-size: 14px }
+.pager { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; font-size: 13px; color: var(--muted) }
+.pager .btn:disabled { opacity: .4; cursor: not-allowed }
+@media (max-width: 900px) { .co-grid { grid-template-columns: 1fr } }
+/* Way-finding: grouped menu, breadcrumb, and one shared list pattern (search, count, pages) */
+.nav .grp { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--side-dim); padding: 14px 12px 4px }
+.nav .grp:first-child { padding-top: 0 }
+.crumbs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); margin-bottom: 4px }
+.crumbs b { color: var(--ink); font-weight: 600 }
+.crumbs i { font-style: normal; color: var(--soft) }
+.listbar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; margin-bottom: 8px }
+.search { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line-strong); border-radius: 10px; padding: 0 10px; background: var(--surface); min-width: 0; flex: 0 1 280px }
+.search input { border: 0; outline: 0; background: transparent; color: var(--ink); font: 500 13px var(--body); padding: 8px 0; width: 100%; min-width: 0 }
+.search:focus-within { border-color: var(--red) }
+.search svg { flex: none; color: var(--soft) }
+.count { font-size: 12px; color: var(--muted) }
+.pages { display: flex; gap: 4px; align-items: center }
+.pages button { font: 600 12px var(--body); min-width: 30px; height: 30px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); cursor: pointer; font-variant-numeric: tabular-nums }
+.pages button[aria-current="page"] { background: var(--carbon); border-color: var(--carbon); color: var(--bone) }
+.pages button:disabled { opacity: .35; cursor: not-allowed }
+.pages button:focus-visible, .search input:focus-visible { outline: 2px solid var(--red); outline-offset: 2px }
+.noresult { padding: 22px 8px; text-align: center; color: var(--muted); font-size: 13px }
+@media (max-width: 860px) {
+  .note { grid-template-columns: 1fr }
+  .app { grid-template-columns: 1fr }
+  .side { flex-direction: row; flex-wrap: wrap; align-items: center; padding: 12px }
+  .side .logo { padding: 0 8px }
+  .nav { flex-direction: row; flex-wrap: wrap }
+  .side .store { margin: 0; padding: 4px 8px; flex-basis: 100% }
+  .nav .grp { display: none }
+  .grid2, .grid3 { grid-template-columns: 1fr }
+  .main { padding: 18px 14px }
+}
+@media (prefers-reduced-motion: reduce) { .toast { transition: none } }
+</style>
+
+<div class="wrap">
+  <header class="brand">
+    <svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true" id="logoBig"></svg>
+    <div><h1>See how xpera grows, lab by lab</h1><p>Pick a lab and a user. The menu, the screens, and even the database change to match. Sample store: Gaming Hub (example data).</p></div>
+  </header>
+
+  <section class="controls" aria-label="Walkthrough controls">
+    <div class="ctl"><span>Lab exam</span><div class="seg" id="labSeg" role="group" aria-label="Lab exam">
+      <button id="lab1" data-lab="1">Lab 1 · Tenant A</button><button id="lab2" data-lab="2">Lab 2 · Tenant B</button><button id="lab3" data-lab="3">Final · Tenant C + Master</button></div></div>
+    <div class="ctl"><span>Signed in as</span><div class="seg" id="roleSeg" role="group" aria-label="User">
+      <button id="roleAdmin" data-role="Admin">Admin (Store Owner)</button><button id="roleCashier" data-role="Cashier">Cashier</button><button id="roleStaff" data-role="Staff">Staff</button><button id="roleSuper" data-role="Super Admin">Super Admin</button></div></div>
+  </section>
+
+  <section class="note" aria-live="polite">
+    <div><h2 id="noteTitle"></h2><ul id="noteList"></ul></div>
+    <div class="why" id="noteWhy"></div>
+  </section>
+
+  <section class="app" aria-label="xpera app preview">
+    <aside class="side">
+      <div class="logo"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true" id="logoSmall"></svg>xpera</div>
+      <nav class="nav" id="nav" aria-label="App menu"></nav>
+      <div class="store" id="store"></div>
+    </aside>
+    <main class="main" id="main"></main>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+// ---------- logo ----------
+(function () {
+  const s2 = Math.SQRT1_2, O = [50, 50], f = v => v.toFixed(2), pt = q => f(q[0]) + ',' + f(q[1]);
+  const kite = (dx, dy, L, w, mid) => { const d = [dx * s2, dy * s2], p = [-d[1], d[0]], T = [O[0] + d[0] * L, O[1] + d[1] * L], m = [O[0] + d[0] * mid, O[1] + d[1] * mid]; return { C: O, T, A: [m[0] + p[0] * w, m[1] + p[1] * w], B: [m[0] - p[0] * w, m[1] - p[1] * w] }; };
+  const poly = k => [k.C, k.A, k.T, k.B].map(pt).join(' ');
+  const tx = 50 - ((50 - 40 * s2) + (50 + 58 * s2)) / 2, ty = 50 - ((50 - 58 * s2) + (50 + 40 * s2)) / 2, r = kite(1, -1, 58, 8.5, 13);
+  const mk = ink => `<g transform="translate(${f(tx)} ${f(ty)})"><polygon points="${poly(kite(-1,-1,40,9.5,15))}" fill="${ink}"/><polygon points="${poly(kite(-1,1,40,9.5,15))}" fill="${ink}"/><polygon points="${poly(kite(1,1,40,9.5,15))}" fill="${ink}"/><polygon points="${pt(r.C)} ${pt(r.A)} ${pt(r.T)}" fill="#F43F5E"/><polygon points="${pt(r.C)} ${pt(r.T)} ${pt(r.B)}" fill="#F43F5E" fill-opacity="0.55"/></g>`;
+  document.getElementById('logoBig').innerHTML = mk('currentColor');
+  document.getElementById('logoSmall').innerHTML = mk('#F4F1EA');
+})();
+
+// ---------- model ----------
+const PLAN = { 1: 'A', 2: 'B', 3: 'C' };
+// [screen, plan that unlocks it, menu group]. Groups follow the store's day: look, sell, care, run.
+const FEATURES = [
+  ['Dashboard', 'B', 'Insights'], ['Reports', 'B', 'Insights'],
+  ['Sales', 'A', 'Sell'], ['Payments', 'A', 'Sell'], ['Products', 'A', 'Sell'],
+  ['Customers', 'A', 'Customer care'], ['Inquiries', 'A', 'Customer care'], ['Complaints', 'A', 'Customer care'], ['Feedback', 'A', 'Customer care'], ['Retention', 'B', 'Customer care'],
+  ['Branches', 'C', 'Store'], ['Users', 'A', 'Store']
+];
+const ROLE_CAN = {
+  'Admin': ['Dashboard', 'Products', 'Customers', 'Sales', 'Payments', 'Inquiries', 'Complaints', 'Feedback', 'Retention', 'Reports', 'Branches', 'Users'],
+  'Cashier': ['Customers', 'Sales', 'Payments'],
+  'Staff': ['Products', 'Customers', 'Inquiries', 'Complaints', 'Feedback', 'Retention']
+};
+const MASTER = ['Overview', 'Tenants', 'Subscriptions'];
+const rank = { A: 1, B: 2, C: 3 };
+const LAB_NOTES = {
+  1: ['Lab 1 · Tenant A: data collection', ['Sign in with a store code, so xpera opens the right store database.', 'Keep a product list with Available or Not available, but no stock counts.', 'Keep customer records, and record sales at a simple checkout, plus payments (main transactions).', 'Log inquiries, complaints, and feedback, and move each one to Resolved.']],
+  2: ['Lab 2 · Tenant B: business intelligence and actions', ['Everything from Lab 1 stays.', 'New: Dashboard with 5 strategic KPIs and 6 graphs.', 'New: Operational reports (print or PDF in the real app).', 'New: Retention campaigns. Each one records its reason (from a dashboard graph), its goal, and its dates. Staff tells the customers, and the Cashier applies the promo at checkout.']],
+  3: ['Final · Tenant C + Master: the whole system', ['Everything from Labs 1 and 2 stays.', 'New for Tenant C: Branches, with a branch filter and branch comparison.', 'New: the Master, where the Super Admin (you) manages every tenant and its plan.']]
+};
+const state = { lab: 3, role: 'Admin', screen: 'Dashboard', branch: 'All branches', camp: 0, coCust: 'Nina Go', applied: false, cart: [{ n: 'Gaming mouse', q: 1 }], coPay: 'Cash', coDue: '2026-11-20', salesTab: 'checkout', salesPage: 0, fuOpen: '', fuMethod: 'Call', fuDone: {}, newCamp: false, nc: {} };
+try { const s = JSON.parse(localStorage.getItem('xpera-walk') || 'null'); if (s) Object.assign(state, s, { newCamp: false, nc: {}, camp: s.camp > 3 ? 0 : s.camp }); } catch (e) {}
+
+// ---------- sample data (examples) ----------
+const customers = [['Nina Go','0917 555 0188','Mice, pads','₱2,140',4,'Aug 10','Cebu'],['Ria Mendoza','0918 555 0164','Headsets','₱6,450',4,'Today','Davao'],['Marco Reyes','0917 555 0142','GPUs, cooling','₱64,980',5,'Today','Cebu'],['Alyssa Tan','0918 555 0193','Peripherals','₱18,450',4,'Yesterday','Davao'],['Jomar Cruz','0927 555 0108','RAM, storage','₱12,300',2,'Oct 15','Cebu'],['Bea Santos','0915 555 0176','Monitors','₱9,990',5,'Oct 12','Iloilo'],['Paolo Diaz','0919 555 0121','Full builds','₱86,500',3,'Oct 9','Davao'],['Kyle Lim','0995 555 0130','Keyboards','₱4,250',4,'Oct 18','Iloilo']];
+// Products: [name, category, price, available]. A status only, no stock counts.
+const products = [['RTX 5070 Ti 16GB', 'Graphics cards', 48995, false], ['RTX 4070 Super 12GB', 'Graphics cards', 38995, true], ['Ryzen 7 7800X3D', 'Processors', 24950, true], ['32GB DDR5 RAM', 'Memory', 5990, false], ['27" 165Hz monitor', 'Monitors', 9990, true], ['Mechanical keyboard', 'Peripherals', 4590, true], ['Gaming mouse', 'Peripherals', 2990, true], ['Wireless headset', 'Peripherals', 6450, true]];
+// Inquiries: [date, customer, question, product waited for, status]
+const inquiries = [['Oct 21', 'Marco Reyes', 'Is the RTX 5070 Ti available?', 'RTX 5070 Ti 16GB', 'Waiting for product'], ['Oct 21', 'Kyle Lim', 'When is the RTX 5070 Ti coming back?', 'RTX 5070 Ti 16GB', 'Waiting for product'], ['Oct 20', 'Alyssa Tan', 'Do you have 32GB DDR5 RAM?', '32GB DDR5 RAM', 'Waiting for product'], ['Oct 20', 'Bea Santos', 'Can I reserve a 27" 165Hz monitor?', '', 'Open'], ['Oct 18', 'Paolo Diaz', 'PSU wattage for a full build', '', 'Resolved']];
+// Complaints: [date, customer, complaint, type, status]
+const complaints = [['Oct 21', 'Kyle Lim', 'Mouse double-clicking after 2 weeks', 'Warranty claim', 'Open'], ['Oct 20', 'Jomar Cruz', 'Wrong RAM speed was delivered', 'Complaint', 'In progress'], ['Oct 17', 'Leo Garcia', 'Monitor has a dead pixel', 'Warranty claim', 'Resolved']];
+const INQ_STATUS = ['Open', 'In progress', 'Waiting for product', 'Resolved'], CMP_STATUS = ['Open', 'In progress', 'Resolved'];
+const feedback = [['Oct 21','Alyssa Tan',5,'Fast checkout, and they tested the keyboard for me.'],['Oct 20','Paolo Diaz',3,'Good build, but I waited 2 days longer than promised.'],['Oct 19','Bea Santos',5,'Best monitor price in the area.'],['Oct 18','Jomar Cruz',2,'Received the wrong RAM speed.']];
+const sales = [['OR-000483','Oct 21','Marco Reyes','RTX 4070 Super 12GB','Credit','₱38,995'],['OR-000482','Oct 21','Alyssa Tan','Mechanical keyboard','Cash','₱4,590'],['OR-000481','Oct 20','Bea Santos','27" 165Hz monitor','Cash','₱9,990'],['OR-000480','Oct 20','Kyle Lim','Gaming mouse','Cash','₱2,990'],['OR-000479','Oct 19','Paolo Diaz','Full build (installment 2 of 3)','Credit','₱28,000']];
+const balances = [['Paolo Diaz','₱8,500','Oct 16','Overdue'],['Jomar Cruz','₱4,000','Oct 14','Overdue'],['Marco Reyes','₱8,500','Oct 30','On track'],['Ria Mendoza','₱5,200','Oct 23','Due soon']];
+// Retention campaigns. "Today" in the sample is Oct 21. [name, type, target, start, end, status, days note, targeted, reached, came back, redeemed, sales, share of time passed]
+const campaigns = [
+  ['Comeback: 10% off upgrades', 'Promo', 'At-risk customers (no visit in 60+ days)', 'Oct 10', 'Oct 31', 'Active', '10 days left', 47, 38, 14, 11, 96400, 0.52],
+  ['Build Points loyalty', 'Loyalty', 'Returning buyers (2+ purchases)', 'Oct 1', 'Dec 31', 'Active', '71 days left', 120, 120, 42, 18, 212300, 0.22],
+  ['Free thermal paste with a build', 'Promo', 'Full-build customers', 'Sep 1', 'Sep 30', 'Ended', 'Ended Sep 30', 25, 25, 9, 9, 148000, 1],
+  ['Holiday bundle', 'Promo', 'All customers', 'Dec 1', 'Dec 24', 'Upcoming', 'Starts in 41 days', 282, 0, 0, 0, 0, 0]
+];
+// Why each campaign was made: [reason, based on (dashboard graph), goal, goal number, so far, created by]
+const reasons = [
+  ['At-risk customers went up from 31 in August to 47 now. These customers have not bought anything in 60+ days.', 'Dashboard · Graph 6, Retention status', 'Bring back 15 customers by Oct 31', 15, 14, 'Mark Villanueva (Admin) · Oct 9'],
+  ['Returning customers bring in most of the sales, but repeat visits slowed down in July and August.', 'Dashboard · Graph 2, New vs. returning', '40 repeat purchases by Dec 31', 40, 42, 'Mark Villanueva (Admin) · Sep 29'],
+  ['Overheating complaints about full builds went up in August, and satisfaction dropped to 4.0.', 'Dashboard · Graph 4, Concerns by type, and Graph 5, Satisfaction', 'Win back 8 full-build customers', 8, 9, 'Mark Villanueva (Admin) · Aug 28'],
+  ['December had the highest sales last year, so the store is planning ahead for the holiday peak.', 'Dashboard · Graph 1, Monthly sales', '₱150,000 in campaign sales', 150000, 0, 'Mark Villanueva (Admin) · Oct 20']
+];
+// Promos and rewards under each customer's name (put there by the Admin's campaigns): [campaign, detail, type]
+const custCamp = {
+  'Nina Go': ['Comeback 10%', 'ends Oct 31', 'Promo'],
+  'Ria Mendoza': ['Comeback 10%', 'used Oct 12', 'Promo'],
+  'Marco Reyes': ['Build Points', '3 of 5 points', 'Loyalty'],
+  'Alyssa Tan': ['Build Points', '2 of 5 points', 'Loyalty'],
+  'Kyle Lim': ['Build Points', 'reward ready: ₱500 off', 'Loyalty']
+};
+// Who a new campaign can target. xpera fills the customer list from the rule: [rule, how many match, first few names]
+const targets = [
+  ['At-risk customers (no purchase in 60+ days)', 47, ['Nina Go', 'Leo Garcia', 'Carlo Uy', 'Ana Flores', 'Ria Mendoza']],
+  ['Returning buyers (2+ purchases)', 120, ['Marco Reyes', 'Alyssa Tan', 'Kyle Lim', 'Paolo Diaz', 'Bea Santos']],
+  ['Full-build customers', 25, ['Paolo Diaz', 'Marco Reyes', 'Leo Garcia', 'Jomar Cruz', 'Kyle Lim']],
+  ['All customers', 282, ['Marco Reyes', 'Alyssa Tan', 'Jomar Cruz', 'Bea Santos', 'Paolo Diaz']]
+];
+const graphs = ['Graph 1, Monthly sales', 'Graph 2, New vs. returning', 'Graph 3, Top customers', 'Graph 4, Concerns by type', 'Graph 5, Satisfaction', 'Graph 6, Retention status'];
+const followups = [
+  ['Ria Mendoza', 'Headsets', 'Oct 12 · Call', 'Ben Torres', 'Redeemed', '₱6,450'],
+  ['Carlo Uy', 'Monitors', 'Oct 13 · Text', 'Ben Torres', 'No answer', '—'],
+  ['Ana Flores', 'GPUs', 'Oct 15 · Call', 'Joy Santiago', 'Came back', '₱3,200'],
+  ['Nina Go', 'Mice, pads', 'Not yet', '—', 'select', '—'],
+  ['Leo Garcia', 'Full builds', 'Not yet', '—', 'select', '—']
+];
+// What the cashier sees at checkout: [customer, item, price, campaign or null, reward text, discount]
+// Promo or reward under a customer's name at checkout: [campaign, text, percent off, pesos off]
+const custPromo = {
+  'Nina Go': ['Comeback: 10% off upgrades', '10% off · ends Oct 31 (10 days left)', .1, 0],
+  'Kyle Lim': ['Build Points loyalty', 'Reward ready: ₱500 off (5 of 5 points)', 0, 500]
+};
+let nextOR = 485;
+const tenants = [['PixelZone','A','pixelzone_db','Active','Nov 03'],['Gaming Hub','C','gaminghub_db','Active','Nov 21'],['Arcade Supply','B','arcadesupply_db','Active','Dec 02'],['ByteBox PC','A','byteboxpc_db','Suspended','—']];
+
+// ---------- helpers ----------
+const $ = id => document.getElementById(id);
+const pill = (t) => { const m = { 'Open': 'p-dark', 'In progress': 'p-warn', 'Resolved': 'p-good', 'Inquiry': 'p-info', 'Complaint': 'p-red', 'Warranty claim': 'p-warn', 'Overdue': 'p-red', 'Due soon': 'p-warn', 'On track': 'p-gray', 'Active': 'p-good', 'Suspended': 'p-red', 'Locked': 'p-red', 'Credit': 'p-warn', 'Cash': 'p-gray', 'Admin': 'p-dark', 'Cashier': 'p-red', 'Staff': 'p-gray', 'At risk': 'p-warn', 'Came back': 'p-good', 'Redeemed': 'p-good', 'Reached': 'p-info', 'No answer': 'p-gray', 'Upcoming': 'p-info', 'Ended': 'p-gray', 'Promo': 'p-red', 'Loyalty': 'p-dark', 'Waiting for product': 'p-warn', 'Available': 'p-good', 'Not available': 'p-red', 'Added by hand': 'p-warn', 'Product is back': 'p-good', 'Applied': 'p-good', 'Goal reached': 'p-good', 'A': 'p-gray', 'B': 'p-info', 'C': 'p-red' }; return `<span class="pill ${m[t] || 'p-gray'}">${t}</span>`; };
+const stars = n => `<span class="stars" aria-label="${n} of 5">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
+const table = (head, rows) => `<div class="tbl"><table><thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+// Every list uses this: a search box, a count, and numbered pages, so long lists stay short.
+const NOUNS = { customers: 'customers', balances: 'balances', products: 'products', inquiries: 'inquiries', complaints: 'complaints', feedback: 'entries', users: 'accounts', campaigns: 'campaigns', followups: 'customers', tenants: 'stores', subs: 'stores', sales: 'sales' };
+const PER_PAGE = 5;
+const searchIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.4"/><path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+const cellText = c => String(c).replace(/<option(?![^>]*selected)[^>]*>[^<]*<\/option>/g, '').replace(/<[^>]+>/g, ' ').toLowerCase();
+function ptable(key, head, rows) {
+  state.q = state.q || {}; state.pg = state.pg || {};
+  const q = (state.q[key] || '').trim().toLowerCase(), noun = NOUNS[key] || 'rows';
+  const found = q ? rows.filter(r => r.some(c => cellText(c).includes(q))) : rows;
+  const pages = Math.max(1, Math.ceil(found.length / PER_PAGE)), pg = Math.min(state.pg[key] || 0, pages - 1);
+  const shown = found.slice(pg * PER_PAGE, pg * PER_PAGE + PER_PAGE);
+  const nums = Array.from({ length: pages }, (_, i) => `<button type="button" data-pg="${key}" data-to="${i}" ${i === pg ? 'aria-current="page"' : ''} aria-label="Page ${i + 1}">${i + 1}</button>`).join('');
+  const bar = `<div class="listbar"><label class="search" for="q-${key}">${searchIcon}<input id="q-${key}" type="search" placeholder="Search ${noun}" value="${(state.q[key] || '').replace(/"/g, '&quot;')}" autocomplete="off"></label><span class="count">${found.length === rows.length ? `${rows.length} ${noun}` : `${found.length} of ${rows.length} ${noun}`}</span></div>`;
+  const pager = pages > 1 ? `<div class="pager"><span>${pg * PER_PAGE + 1}–${pg * PER_PAGE + shown.length} of ${found.length}</span><span class="pages"><button type="button" data-pg="${key}" data-to="${pg - 1}" ${pg === 0 ? 'disabled' : ''} aria-label="Previous page">‹</button>${nums}<button type="button" data-pg="${key}" data-to="${pg + 1}" ${pg >= pages - 1 ? 'disabled' : ''} aria-label="Next page">›</button></span></div>` : '';
+  return bar + (shown.length ? table(head, shown) : `<div class="noresult">No ${noun} match “${state.q[key]}”. Try another word.</div>`) + pager;
+}
+const card = (title, sub, body) => `<div class="card"><h4>${title}</h4>${sub ? `<p class="sub">${sub}</p>` : ''}${body}</div>`;
+const dbIcon = '<svg width="13" height="15" viewBox="0 0 22 26" fill="none" aria-hidden="true"><ellipse cx="11" cy="5" rx="9" ry="3.5" stroke="currentColor" stroke-width="2.2"/><path d="M2 5V21C2 23 6 24.5 11 24.5S20 23 20 21V5M2 13C2 15 6 16.5 11 16.5S20 15 20 13" stroke="currentColor" stroke-width="2.2"/></svg>';
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200); }
+
+// ---------- charts (drawn to scale) ----------
+const W = 420, H = 180, PL = 34, PB = 22, PT = 10, PR = 10;
+function axes(min, max, steps, fmt) { let s = ''; for (let i = 0; i <= steps; i++) { const v = min + (max - min) * i / steps, y = PT + (H - PT - PB) * (1 - i / steps); s += `<line class="g-line" x1="${PL}" x2="${W - PR}" y1="${y}" y2="${y}"/><text x="${PL - 6}" y="${y + 4}" text-anchor="end">${fmt(v)}</text>`; } return s; }
+function xLabels(labels, xs) { return labels.map((l, i) => `<text x="${xs(i)}" y="${H - 6}" text-anchor="middle">${l}</text>`).join(''); }
+const months = ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
+function lineChart(vals, min, max, steps, fmt, cls, area) {
+  const xs = i => PL + 10 + (W - PL - PR - 20) * i / (vals.length - 1), ys = v => PT + (H - PT - PB) * (1 - (v - min) / (max - min));
+  const pts = vals.map((v, i) => `${xs(i)},${ys(v)}`).join(' ');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${axes(min, max, steps, fmt)}${area ? `<polygon class="${cls}" fill-opacity="0.12" stroke="none" points="${xs(0)},${H - PB} ${pts} ${xs(vals.length - 1)},${H - PB}"/>` : ''}<polyline class="${cls}" fill="none" stroke-width="2.5" points="${pts}" style="fill:none"/>${vals.map((v, i) => `<circle cx="${xs(i)}" cy="${ys(v)}" r="${i === vals.length - 1 ? 5 : 3.5}" class="${cls}" style="stroke:var(--surface);stroke-width:2"/>`).join('')}${xLabels(months, xs)}</svg>`;
+}
+function stackChart(a, b, max) {
+  const n = a.length, bw = 30, xs = i => PL + 10 + (W - PL - PR - 20) * (i + .5) / n, sc = v => (H - PT - PB) * v / max;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${axes(0, max, 4, v => Math.round(v))}${a.map((v, i) => `<rect class="c-ink" x="${xs(i) - bw / 2}" y="${H - PB - sc(b[i])}" width="${bw}" height="${sc(b[i])}"/><rect class="c-red" x="${xs(i) - bw / 2}" y="${H - PB - sc(b[i]) - sc(v)}" width="${bw}" height="${sc(v)}"/>`).join('')}${xLabels(months, xs)}</svg>`;
+}
+function hbars(rows, max) { return `<div style="display:grid;gap:9px;margin-top:4px">${rows.map(([n, v], i) => `<div style="display:grid;grid-template-columns:96px minmax(0,1fr) 72px;gap:8px;align-items:center;font-size:12px"><span style="font-weight:500">${n}</span><span style="height:14px;border-radius:4px;background:${i === 0 ? 'var(--red)' : 'var(--ink)'};opacity:${i === 0 ? 1 : .8};width:${Math.max(3, 100 * v / max)}%"></span><span style="color:var(--muted);text-align:right;font-variant-numeric:tabular-nums">₱${v.toLocaleString('en-US')}</span></div>`).join('')}</div>`; }
+function donut(parts) {
+  const tot = parts.reduce((s, p) => s + p[1], 0); let a = -Math.PI / 2, d = '';
+  const arc = (r, a0, a1) => { const P = t => [80 + r * Math.cos(t), 80 + r * Math.sin(t)]; const A = P(a0), B = P(a1); return `M${A[0].toFixed(1)} ${A[1].toFixed(1)}A${r} ${r} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${B[0].toFixed(1)} ${B[1].toFixed(1)}`; };
+  for (const [n, v, c] of parts) { const b = a + 2 * Math.PI * v / tot; d += `<path d="${arc(56, a, b - .04)}" stroke="${c}" stroke-width="24" fill="none"/>`; a = b; }
+  return `<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 160 160" style="width:150px" role="img">${d}<text x="80" y="78" text-anchor="middle" style="font:600 22px var(--display);fill:var(--ink)">${tot}</text><text x="80" y="96" text-anchor="middle">concerns</text></svg><div style="display:grid;gap:8px;font-size:13px">${parts.map(([n, v, c]) => `<span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${c};margin-right:6px"></i>${n} <span style="color:var(--muted)">${v} · ${Math.round(100 * v / tot)}%</span></span>`).join('')}</div></div>`;
+}
+function vbars(rows, max) {
+  const n = rows.length, bw = 60, xs = i => PL + 10 + (W - PL - PR - 20) * (i + .5) / n, sc = v => (H - PT - PB) * v / max;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${axes(0, max, 5, v => Math.round(v))}${rows.map(([n2, v, c], i) => `<rect x="${xs(i) - bw / 2}" y="${H - PB - sc(v)}" width="${bw}" height="${sc(v)}" rx="4" fill="${c}"/><text x="${xs(i)}" y="${H - PB - sc(v) - 5}" text-anchor="middle" style="fill:var(--ink);font-weight:600">${v}</text>`).join('')}${xLabels(rows.map(r => r[0]), xs)}</svg>`;
+}
+
+// ---------- screens ----------
+const branchFactor = () => ({ 'All branches': 1, 'Cebu': .46, 'Davao': .33, 'Iloilo': .21 }[state.branch] || 1);
+const S = {
+  Customers: () => [`Customers`, `${state.lab === 3 && state.branch !== 'All branches' ? state.branch + ' branch · ' : ''}${customers.length} customers · example data`, `<button class="btn primary" data-act="Customer form opened">+ Add customer</button>`,
+    card('Customer list', state.lab >= 2 ? 'Every sale, concern, and feedback is tied to a customer. The last column shows the promo or reward under their name, put there by the Admin’s campaigns.' : 'Every inquiry, complaint, sale, and feedback is tied to a customer.', ptable('customers', ['Name', 'Contact', 'Usually buys', 'Spent (6 mo.)', 'Last rating', 'Last visit'].concat(state.lab === 3 ? ['Branch'] : []).concat(state.lab >= 2 ? ['Promo / reward'] : []), customers.filter(c => state.lab !== 3 || state.branch === 'All branches' || c[6] === state.branch).map(c => [c[0], c[1], c[2], c[3], stars(c[4]), c[5]].concat(state.lab === 3 ? [c[6]] : []).concat(state.lab >= 2 ? [custCamp[c[0]] ? `${pill(custCamp[c[0]][2])} ${custCamp[c[0]][0]} <span style="color:var(--muted);font-size:12px">· ${custCamp[c[0]][1]}</span>` : '<span style="color:var(--soft)">—</span>'] : []))))],
+  Sales: () => { const camp = state.lab >= 2, peso = v => '₱' + Math.round(v).toLocaleString('en-US'), num = t => +String(t).replace(/[^0-9.]/g, '');
+    const tabs = `<div class="seg" role="group" aria-label="Sales view">${[['checkout', 'Checkout'], ['history', 'Sales history']].map(([k, l]) => `<button type="button" data-stab="${k}" aria-pressed="${state.salesTab === k}">${l}</button>`).join('')}</div>`;
+
+    // Sales history: its own view, 5 rows per page
+    if (state.salesTab === 'history') {
+      const rows = (camp ? [['OR-000484', 'Oct 21', 'Ria Mendoza', 'Wireless headset', 'Cash', '₱6,450', 'Comeback 10%']] : []).concat(sales.map(r => r[6] ? r : r.concat([r[0] === 'OR-000483' ? 'Build Points' : '—']))).sort((x, y) => y[0].localeCompare(x[0]));
+      const head = ['OR no.', 'Date', 'Customer', 'Items', 'Type', 'Amount'].concat(camp ? ['Campaign'] : []);
+      const body = rows.map(r => [r[0], r[1], r[2], r[3], pill(r[4]), r[5]].concat(camp ? [r[6] === '—' ? '—' : `<span style="color:var(--red-ink);font-weight:600">${r[6]}</span>`] : []));
+      return [`Sales history`, `Every sale, saved under a customer · newest first`, tabs, card('All sales', camp ? 'Sales made with a promo show their campaign.' : 'Search by customer, item, or OR number.', ptable('sales', head, body))];
+    }
+
+    // Checkout
+    const c = customers.find(x => x[0] === state.coCust) || customers[0];
+    const owed = balances.filter(x => x[0] === c[0]).reduce((t, x) => t + num(x[1]), 0);
+    const tag = c[5].startsWith('Aug') || c[5].startsWith('Jul') ? 'At risk' : num(c[3]) >= 50000 ? 'Top customer' : 'Regular';
+    const custCard = card('Customer', '', `<div class="cust"><span class="avatar" aria-hidden="true">${c[0].split(' ').map(w => w[0]).join('')}</span><div style="min-width:0"><div class="cust-name">${c[0]}</div><div class="cust-meta">${tag} · balance ${peso(owed)} · usually buys ${c[2]}</div></div><label class="visually-hidden" for="coCust" hidden>Customer</label><select id="coCust" class="linksel" aria-label="Change customer"><option value="${c[0]}">Change</option>${customers.filter(x => x[0] !== c[0]).map(x => `<option>${x[0]}</option>`).join('')}</select></div>`);
+
+    const price = n => (products.find(x => x[0] === n) || [0, 0, 0])[2];
+    const count = state.cart.reduce((t, l) => t + l.q, 0);
+    const lines = state.cart.length ? table(['Item', 'Qty', 'Price', 'Subtotal', ''], state.cart.map((l, i) => [l.n, `<span class="qty"><button type="button" data-qty="${i}" data-d="-1" aria-label="One less ${l.n}">−</button>${l.q}<button type="button" data-qty="${i}" data-d="1" aria-label="One more ${l.n}">+</button></span>`, peso(price(l.n)), peso(price(l.n) * l.q), `<button type="button" class="xbtn" data-rm="${i}" aria-label="Remove ${l.n}">×</button>`])) : '<p class="sub" style="margin:0 0 10px">No items yet. Add the first one below.</p>';
+    const adder = `<select id="coProd" class="addsel" aria-label="Add item"><option value="">+ Add item by name</option>${products.map(x => `<option value="${x[0].replace(/"/g, '&quot;')}" ${x[3] ? '' : 'disabled'}>${x[0]} · ${peso(x[2])}${x[3] ? '' : ' · Not available'}</option>`).join('')}</select>`;
+    const items = `<div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h4>Items</h4><span class="sub" style="margin:0">${count} item${count === 1 ? '' : 's'}</span></div><div style="display:grid;gap:10px;margin-top:6px">${lines}${adder}</div></div>`;
+
+    const sub = state.cart.reduce((t, l) => t + price(l.n) * l.q, 0), promo = camp ? custPromo[c[0]] : null, on = promo && state.applied && sub > 0;
+    const off = on ? Math.min(sub, promo[2] * sub + promo[3]) : 0, total = sub - off, credit = state.coPay === 'Credit';
+    const promoBox = !promo ? '' : `<div class="note-red" style="display:grid;gap:8px"><div><b>${promo[0]}</b><br>${promo[1]}. This is under ${c[0].split(' ')[0]}’s name.</div>${on ? pill('Applied') : `<button class="btn primary" data-apply="1">Apply ${promo[0].startsWith('Build') ? 'reward' : 'promo'}</button>`}</div>`;
+    const due = new Date(state.coDue + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const pay = `<div class="card pay"><h4>Payment</h4>
+      <div class="seg" role="group" aria-label="Payment type">${['Cash', 'Credit'].map(x => `<button type="button" data-pay="${x}" aria-pressed="${state.coPay === x}">${x}</button>`).join('')}</div>
+      ${credit ? `<label class="ctl" for="coDue"><span>Due date</span><input id="coDue" type="date" value="${state.coDue}"></label>` : ''}
+      ${promoBox}
+      <div class="sumrows"><span class="muted">Subtotal</span><span>${peso(sub)}</span>${camp ? `<span class="muted">Discount</span><span>${off ? '−' : ''}${peso(off)}</span>` : ''}<span class="total">Total</span><span class="total-v">${peso(total)}</span></div>
+      ${credit && total > 0 ? `<div class="note-red">This adds ${peso(total)} to ${c[0].split(' ')[0]}’s balance, due ${due}. New balance: <b>${peso(owed + total)}</b>.</div>` : ''}
+      <button class="btn primary wide" data-cosave="1">Save sale</button></div>`;
+
+    const actions = `${tabs}<button class="btn" data-cocancel="1">Cancel</button>`;
+    return [`Record sale`, `Sale OR-000${nextOR} · Wednesday, October 21`, actions, `<div class="co-grid"><div class="co-main">${custCard}${items}</div>${pay}</div>`]; },
+  Payments: () => [`Payments`, `18 open balances · ₱21,400 overdue`, `<button class="btn primary" data-act="Payment form opened">+ Record payment</button>`, card('Balances', 'Installment and credit balances. Overdue ones float to the top.', ptable('balances', ['Customer', 'Balance', 'Due date', 'Status'], balances.map(b => [b[0], b[1], b[2], pill(b[3])])))],
+  Products: () => { const peso = v => '₱' + v.toLocaleString('en-US'), admin = state.role === 'Admin', waiting = n => inquiries.filter(q => q[3] === n && q[4] === 'Waiting for product').length;
+    return [`Products`, `${products.filter(x => x[3]).length} of ${products.length} available · status only, no stock counts`, admin ? `<button class="btn primary" data-act="Product form opened: name, category, price">+ Add product</button>` : '',
+      card('Product list', admin ? 'The Admin manages the list and prices. Staff update availability when something sells out or arrives.' : 'Search here when a customer asks. Update the status when a product sells out or arrives.', ptable('products', ['Product', 'Category', 'Price', 'Availability', 'Customers waiting'], products.map((x, i) => [x[0], x[1], peso(x[2]), `<select id="avail-${i}" aria-label="Availability of ${x[0].replace(/"/g, '&quot;')}"><option ${x[3] ? 'selected' : ''}>Available</option><option ${x[3] ? '' : 'selected'}>Not available</option></select>`, waiting(x[0]) ? pill(waiting(x[0]) + ' waiting') : '—'])))]; },
+  Inquiries: () => [`Inquiries`, `${inquiries.filter(q => q[4] !== 'Resolved').length} open · customer questions`, `<button class="btn primary" data-act="Inquiry form opened">+ Log inquiry</button>`,
+    card('Inquiry list', 'If a product is not available, the inquiry stays open. When it comes back, contact the customer and resolve it.', ptable('inquiries', ['Date', 'Customer', 'Inquiry', 'Status', ''], inquiries.map((q, i) => [q[0], q[1], q[2], `<select id="inq-${i}" aria-label="Status for ${q[1]}">${INQ_STATUS.map(t => `<option ${t === q[4] ? 'selected' : ''}>${t}</option>`).join('')}</select>`, q[4] === 'Waiting for product' && (products.find(x => x[0] === q[3]) || [])[3] ? pill('Product is back') : ''])))],
+  Complaints: () => [`Complaints`, `${complaints.filter(q => q[4] !== 'Resolved').length} open · complaints and warranty claims`, `<button class="btn primary" data-act="Complaint form opened">+ Log complaint</button>`,
+    card('Complaint list', 'Staff move each one from Open to In progress to Resolved.', ptable('complaints', ['Date', 'Customer', 'Complaint', 'Type', 'Status'], complaints.map((q, i) => [q[0], q[1], q[2], pill(q[3]), `<select id="cmp-${i}" aria-label="Status for ${q[1]}">${CMP_STATUS.map(t => `<option ${t === q[4] ? 'selected' : ''}>${t}</option>`).join('')}</select>`])))],
+  Feedback: () => [`Feedback`, `Average 4.3 out of 5 · 86 this month`, `<button class="btn primary" data-act="Feedback form opened">+ Record feedback</button>`, card('Recent feedback', 'In Lab 2 this becomes the customer satisfaction graph.', ptable('feedback', ['Date', 'Customer', 'Rating', 'Comment'], feedback.map(f => [f[0], f[1], stars(f[2]), f[3]])))],
+  Users: () => [`Users`, `Staff accounts for this store`, `<button class="btn primary" data-act="New user form opened">+ Add user</button>`, card('Staff accounts', 'The Admin creates accounts and sets each role.', ptable('users', ['Name', 'Username', 'Role', 'Status'].concat(state.lab === 3 ? ['Branch'] : []), [['Mark Villanueva', 'owner', pill('Admin'), pill('Active'), 'All'], ['Alyssa Ramos', 'cashier01', pill('Cashier'), pill('Active'), 'Cebu'], ['Ben Torres', 'staff01', pill('Staff'), pill('Active'), 'Davao'], ['Joy Santiago', 'staff02', pill('Staff'), pill('Locked'), 'Iloilo']].map(r => state.lab === 3 ? r : r.slice(0, 4))))],
+  Dashboard: () => { const f = branchFactor(); const sales6 = [312, 348, 395, 371, 428, 486].map(v => Math.round(v * f));
+    return [`Dashboard`, `Strategic view · last 6 months · 1,284 transactions${state.lab === 3 ? ' · ' + state.branch : ''}`, '',
+    `<div class="label">Strategic KPIs</div><div class="kpis">
+      <div class="kpi"><span>Sales this month</span><b>₱${Math.round(486 * f)}k</b><small>+13% vs September</small></div>
+      <div class="kpi"><span>Retention rate</span><b>75%</b><small>212 of 282 active</small></div>
+      <div class="kpi"><span>Avg. satisfaction</span><b>4.3 / 5</b><small>from 86 feedback</small></div>
+      <div class="kpi"><span>Complaints resolved</span><b>89%</b><small>avg. 2.1 days</small></div>
+      <div class="kpi"><span>Active campaigns</span><b>2</b><small>25% came back · ₱309k sales</small></div>
+      <div class="kpi hot"><span>At-risk customers</span><b>${Math.round(47 * f)}</b><small>no visit in 60+ days</small></div></div>
+     <div class="label">Six graphs</div>
+     <div class="grid2">
+      ${card('1 · Monthly sales', 'Thousands of pesos', `<div class="chart">${lineChart(sales6, 0, Math.ceil(Math.max(...sales6) / 100) * 100, 4, v => Math.round(v), 'c-red', true)}</div>`)}
+      ${card('2 · New vs. returning customers', 'Customers who bought each month', `<div class="chart">${stackChart([18, 22, 25, 19, 24, 21], [41, 46, 52, 55, 60, 67], 100)}</div><div class="legend"><span><i style="background:var(--red)"></i>New</span><span><i style="background:var(--ink)"></i>Returning</span></div>`)}
+      ${card('3 · Top customers', 'Spent in the last 6 months', hbars([['Paolo Diaz', 86500], ['Marco Reyes', 64980], ['Alyssa Tan', 18450], ['Jomar Cruz', 12300], ['Bea Santos', 9990]], 86500))}
+      ${card('4 · Concerns by type', 'Inquiries, complaints, warranty claims', donut([['Inquiries', 58, '#898989'], ['Complaints', 21, '#F43F5E'], ['Warranty claims', 14, '#F88C9E']]))}
+      ${card('5 · Customer satisfaction', 'Average rating, 1 to 5', `<div class="chart">${lineChart([3.9, 4.0, 4.1, 4.0, 4.2, 4.3], 3.5, 4.5, 4, v => v.toFixed(1), 'c-ink', false)}</div>`)}
+      ${card('6 · Retention status', 'Customers by last visit', `<div class="chart">${vbars([['Active', 212, '#898989'], ['At risk', 47, '#F88C9E'], ['Lost', 23, '#F43F5E']], 250)}</div><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-top:8px"><span class="sub" style="margin:0">At risk went up from 31 to 47 since August.</span><button class="btn primary" data-goto="0">Start a campaign</button></div>`)}
+     </div>`]; },
+  Reports: () => [`Reports`, `Operational view · day-to-day details`, '', `<div class="grid3">${card('Daily sales report', 'Every sale today, with totals', '<span class="pill p-gray">Print · PDF in the app</span>')}${card('Concerns report', 'Inquiries and complaints by status', '<span class="pill p-gray">Print · PDF in the app</span>')}${card('Feedback report', 'Ratings and comments by date', '<span class="pill p-gray">Print · PDF in the app</span>')}${card('Campaign report', 'Reason, goal, and results of each campaign', '<span class="pill p-gray">Print · PDF in the app</span>')}</div>` +
+    card('Preview: Campaign report · October', 'Why each campaign was made and how it did', table(['Campaign', 'Reason', 'Goal', 'Result', 'Sales'], campaigns.map((k, i) => [k[0], `<span style="white-space:normal;display:block;min-width:220px">${reasons[i][0]}</span>`, reasons[i][2], reasons[i][4] >= reasons[i][3] ? pill('Goal reached') : (k[5] === 'Upcoming' ? pill('Upcoming') : `${reasons[i][4]} of ${reasons[i][3]}`), '₱' + k[11].toLocaleString('en-US')]))) +
+    card('Preview: Daily sales report · Oct 21', 'Gaming Hub · Main branch', table(['OR no.', 'Customer', 'Items', 'Type', 'Amount'], sales.slice(0, 2).map(s => [s[0], s[2], s[3], s[4], s[5]]).concat([['', '', '', '<b>Total</b>', '<b>₱43,585</b>']])))],
+  Retention: () => { const c = campaigns[state.camp] || campaigns[0], admin = state.role === 'Admin';
+    const pct = (a, b) => b ? Math.round(100 * a / b) + '%' : '—', peso = v => '₱' + v.toLocaleString('en-US');
+    const funnel = [['Targeted', c[7]], ['Reached', c[8]], ['Came back', c[9]], ['Used the reward', c[10]]];
+    const steps = funnel.map(([n, v], i) => `<div style="display:grid;grid-template-columns:118px minmax(0,1fr) 92px;gap:8px;align-items:center;font-size:13px"><span style="font-weight:500">${n}</span><span style="height:16px;border-radius:4px;background:${i === 3 ? 'var(--red)' : 'var(--ink)'};opacity:${i === 3 ? 1 : 1 - i * .2};width:${c[7] ? Math.max(2, 100 * v / c[7]) : 2}%"></span><span style="color:var(--muted);text-align:right;font-variant-numeric:tabular-nums">${v}${i ? ' · ' + pct(v, c[7]) : ''}</span></div>`).join('');
+    const timeline = `<div style="display:grid;gap:8px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>Start · ${c[3]}</span><span>End · ${c[4]}</span></div><div style="position:relative;height:10px;border-radius:999px;background:var(--line)"><div style="height:100%;width:${100 * c[12]}%;border-radius:999px;background:${c[5] === 'Ended' ? 'var(--soft)' : 'var(--red)'}"></div>${c[5] === 'Active' ? `<span title="Today, Oct 21" style="position:absolute;top:-4px;left:calc(${100 * c[12]}% - 9px);width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--red)"></span>` : ''}</div><div style="font:600 20px var(--display)">${c[6]}</div><div class="sub" style="margin:0">Target: ${c[2]}</div></div>`;
+    const list = ptable('campaigns', ['Campaign', 'Type', 'Dates', 'Status', 'Came back', 'Sales', ''], campaigns.map((k, i) => [k[0], pill(k[1]), `${k[3]} – ${k[4]}`, pill(k[5]) + ` <span style="color:var(--muted);font-size:12px">${k[6]}</span>`, pct(k[9], k[7]), peso(k[11]), `<button class="btn" data-camp="${i}" aria-pressed="${i === state.camp}" ${i === state.camp ? 'style="border-color:var(--red);color:var(--red-ink)"' : ''}>${i === state.camp ? 'Viewing' : 'Track'}</button>`]));
+    const me = admin ? 'Mark Villanueva' : 'Ben Torres', today = 'Oct 21';
+    const fuRows = followups.map(f => { const d = state.fuDone[f[0]]; return d ? [f[0], f[1], `${today} · ${d.method}`, d.by, d.result, f[5], d.note] : f.concat(['']); });
+    const methods = [['Call', 'Phone call'], ['Text', 'SMS or Messenger'], ['In person', 'Customer visited the store']];
+    const form = state.fuOpen ? card(`Record follow-up · ${state.fuOpen}`, 'Pick how you contacted the customer, then what happened.', `<div style="display:grid;gap:14px">
+        <div class="ctl"><span>How did you contact them?</span><div class="seg" role="group" aria-label="Contact method">${methods.map(([m, d]) => `<button type="button" data-method="${m}" aria-pressed="${state.fuMethod === m}" title="${d}">${m}</button>`).join('')}</div><small style="color:var(--muted)">${methods.find(m => m[0] === state.fuMethod)[1]}</small></div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end">
+          <label class="ctl" for="fuResult"><span>Result</span><select id="fuResult">${(state.fuMethod === 'In person' ? ['Came back', 'Redeemed', 'Reached'] : ['Reached', 'No answer', 'Came back', 'Redeemed']).map(r => `<option>${r}</option>`).join('')}</select></label>
+          <label class="ctl" for="fuNote" style="flex:1;min-width:200px"><span>Note (optional)</span><input id="fuNote" type="text" placeholder="e.g. Will visit on Saturday" style="font:500 13px var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 10px"></label>
+          <span class="ctl"><span>Date · by</span><div style="font-size:13px;padding:7px 0">${today} · ${me}</div></span>
+        </div>
+        <div style="display:flex;gap:8px"><button class="btn primary" data-fusave="1">Save follow-up</button><button class="btn" data-fucancel="1">Cancel</button></div></div>`) : '';
+    const fu = state.camp === 0 ? form + card('Follow-ups', admin ? 'Staff tell each customer about the campaign and record how (call, text, or in person) and the result. When the customer comes back, the Cashier applies the promo and the sale is linked here.' : 'Tell each customer by call, text, or in person. Use the reason above to explain why you are calling. Click Record to save how you contacted them.', ptable('followups', ['Customer', 'Usually buys', 'Contacted', 'By', 'Result', 'Sale linked', ''], fuRows.map(f => [f[0], f[1], f[2], f[3], f[4] === 'select' ? '—' : pill(f[4]), f[5], f[4] === 'select' ? `<button class="btn${state.fuOpen === f[0] ? ' primary' : ''}" data-fu="${f[0]}">Record</button>` : (f[6] ? `<span style="color:var(--muted);font-size:12px">${f[6]}</span>` : '')]))) : card('Follow-ups', '', `<p class="sub" style="margin:0">Click <b>Track</b> on “Comeback: 10% off upgrades” to see each customer’s follow-up.</p>`);
+    return [admin ? 'Retention campaigns' : 'Campaign follow-ups', admin ? 'Set up a promo or loyalty reward, then track if it worked' : 'Campaigns the owner set up · record each customer’s result', admin ? (state.newCamp ? '' : `<button class="btn primary" data-newcamp="1">+ New campaign</button>`) : '',
+      (admin && state.newCamp ? newCampForm() : '') +
+      card('All campaigns', 'Every campaign has a start and end date, so its status (Upcoming, Active, Ended) updates by itself.', list) +
+      (() => { const r = reasons[state.camp] || reasons[0], money = r[3] > 1000, done = Math.min(1, r[4] / r[3]), fmt = v => money ? peso(v) : v;
+        return card('Why this campaign was made', `Created by ${r[5]}`, `<div style="display:grid;gap:12px">
+          <div style="border-left:3px solid var(--red);padding:2px 0 2px 12px"><div class="label">Reason</div><div style="font-size:15px">${r[0]}</div></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px"><span><span class="label">Based on</span><br>${r[1]}</span><span><span class="label">Goal</span><br>${r[2]}</span></div>
+          <div style="display:grid;gap:6px;max-width:520px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>Progress toward the goal</span><b>${fmt(r[4])} of ${fmt(r[3])}${r[4] >= r[3] ? ' · Goal reached' : ''}</b></div><div style="height:10px;border-radius:999px;background:var(--line)"><div style="height:100%;width:${100 * done}%;border-radius:999px;background:${r[4] >= r[3] ? 'var(--good)' : 'var(--red)'}"></div></div></div>
+        </div>`); })() +
+      `<div class="label">Tracking · ${c[0]}</div>
+      <div class="kpis">
+        <div class="kpi"><span>Status</span><b>${c[5]}</b><small>${c[6]}</small></div>
+        <div class="kpi"><span>Customers reached</span><b>${c[8]}</b><small>of ${c[7]} targeted</small></div>
+        <div class="kpi"><span>Came back</span><b>${pct(c[9], c[7])}</b><small>${c[9]} customers</small></div>
+        <div class="kpi"><span>Used the reward</span><b>${c[10]}</b><small>${c[9] ? pct(c[10], c[9]) + ' of those who came back' : 'not started yet'}</small></div>
+        <div class="kpi hot"><span>Sales from campaign</span><b>${peso(c[11])}</b><small>sales linked to it</small></div>
+      </div>
+      <div class="grid2">${card('Timeline', 'Start date, end date, and today', timeline)}${card('Results', 'From targeted customers to reward used', `<div style="display:grid;gap:10px">${steps}</div>`)}</div>` + fu]; },
+  Branches: () => [`Branches`, `One owner, one database, three locations`, `<button class="btn primary" data-act="Branch form opened">+ Add branch</button>`, `<div class="grid3">${[['Cebu', '₱224k', 132, 4.4], ['Davao', '₱160k', 94, 4.2], ['Iloilo', '₱102k', 56, 4.1]].map(([n, s, c, r]) => card('Gaming Hub ' + n, `${c} customers · rating ${r}`, `<div style="font:600 22px var(--display)">${s}</div><div class="sub" style="margin:0">sales this month</div>`)).join('')}</div>` + card('Compare branches', 'Sales this month (thousands of pesos)', `<div class="chart">${vbars([['Cebu', 224, '#F43F5E'], ['Davao', 160, '#717171'], ['Iloilo', 102, '#B8B8B8']], 250)}</div>`)],
+  Overview: () => [`Platform overview`, `Business intelligence across all tenants`, '', `<div class="kpis"><div class="kpi"><span>Active stores</span><b>3</b><small>1 suspended</small></div><div class="kpi"><span>Plan A</span><b>2</b><small>micro stores</small></div><div class="kpi"><span>Plan B</span><b>1</b><small>small stores</small></div><div class="kpi"><span>Plan C</span><b>1</b><small>medium stores</small></div><div class="kpi hot"><span>Subscription income</span><b>₱9,500</b><small>per month</small></div></div>` + card('Stores on xpera', 'New subscriptions per month', `<div class="chart">${lineChart([0, 1, 1, 2, 3, 4], 0, 5, 5, v => Math.round(v), 'c-red', true)}</div>`)],
+  Tenants: () => [`Tenants`, `Every store and its own database`, `<button class="btn primary" data-act="New tenant: a new database will be created">+ Add tenant</button>`, card('Tenant list', 'Each tenant has a separate database. Stores never see each other’s data.', ptable('tenants', ['Store', 'Plan', 'Database', 'Status'], tenants.map(t => [t[0], pill(t[1]), `<code>${t[2]}</code>`, pill(t[3])])))],
+  Subscriptions: () => [`Subscriptions`, `Plans and renewals`, '', card('Subscriptions', 'Changing a plan unlocks or hides features for that store right away.', ptable('subs', ['Store', 'Plan', 'Monthly', 'Renews', 'Change plan'], tenants.filter(t => t[3] === 'Active').map(t => [t[0], pill(t[1]), { A: '₱1,500', B: '₱3,000', C: '₱5,000' }[t[1]], t[4], `<select id="plan-${t[2]}" data-store="${t[0]}" aria-label="Plan for ${t[0]}">${['A', 'B', 'C'].map(p => `<option ${p === t[1] ? 'selected' : ''}>${p}</option>`).join('')}</select>`])))]
+};
+
+// ---------- new campaign form ----------
+const TODAY = Date.UTC(2026, 9, 21);
+const fmtDate = v => new Date(v + 'T00:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+function ncList() {
+  const n = state.nc, t = targets[n.target || 0], removed = n.removed || [], extra = n.extra || [];
+  return { t, names: t[2].filter(x => !removed.includes(x)).concat(extra), count: t[1] - removed.length + extra.length };
+}
+function newCampForm() {
+  const n = state.nc, { t, names, count } = ncList(), type = n.type || 'Promo';
+  const field = (id, label, html) => `<label class="ctl" for="${id}" style="min-width:0"><span>${label}</span>${html}</label>`;
+  const inp = (id, ph, val, extra = '') => `<input id="${id}" data-nc="${id}" type="text" placeholder="${ph}" value="${(val || '').replace(/"/g, '&quot;')}" ${extra} style="font:500 13px var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 10px;width:100%">`;
+  const date = (id, val) => `<input id="${id}" data-nc="${id}" type="date" value="${val}" style="font:500 13px var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 10px">`;
+  const others = customers.map(c => c[0]).filter(x => !names.includes(x));
+  return card('New campaign', 'Step 1: what the campaign is and why. Step 2: who gets it. xpera puts the promo under each of those customers’ names.', `<div style="display:grid;gap:14px">
+    <div class="grid2">
+      ${field('name', 'Campaign name', inp('name', 'e.g. Comeback: free mouse pad', n.name))}
+      <div class="ctl"><span>Type</span><div class="seg" role="group" aria-label="Campaign type">${['Promo', 'Loyalty'].map(x => `<button type="button" data-nctype="${x}" aria-pressed="${type === x}">${x}</button>`).join('')}</div></div>
+      ${field('reward', type === 'Promo' ? 'Promo' : 'Reward (after 5 purchases)', inp('reward', type === 'Promo' ? 'e.g. 10% off upgrades' : 'e.g. ₱500 off the next purchase', n.reward))}
+      <div style="display:flex;gap:12px;flex-wrap:wrap">${field('start', 'Start date', date('start', n.start || '2026-10-26'))}${field('end', 'End date', date('end', n.end || '2026-11-15'))}</div>
+      ${field('reason', 'Reason (why are we doing this?)', inp('reason', 'e.g. At-risk customers went up from 31 to 47', n.reason))}
+      ${field('based', 'Based on (dashboard graph)', `<select id="based" data-nc="based">${graphs.map(g => `<option ${g === (n.based || graphs[5]) ? 'selected' : ''}>${g}</option>`).join('')}</select>`)}
+      ${field('goal', 'Goal', inp('goal', 'e.g. Bring back 15 customers', n.goal))}
+    </div>
+    <div style="border-top:1px solid var(--line);padding-top:14px;display:grid;gap:10px">
+      ${field('target', 'Who gets it? xpera finds the matching customers', `<select id="target">${targets.map((x, i) => `<option value="${i}" ${i === (n.target || 0) ? 'selected' : ''}>${x[0]} · ${x[1]} customers</option>`).join('')}</select>`)}
+      <div style="background:var(--red-soft);border-radius:12px;padding:12px 14px;display:grid;gap:8px">
+        <div><b>${count} customers</b> will have this ${type.toLowerCase()} under their name</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">${names.map(x => `<span class="pill ${(n.extra || []).includes(x) ? 'p-warn' : 'p-gray'}" style="display:inline-flex;gap:6px;align-items:center">${x}<button type="button" data-ncrm="${x}" aria-label="Remove ${x}" style="all:unset;cursor:pointer;font-weight:700">×</button></span>`).join('')}<span style="color:var(--muted);font-size:12px;align-self:center">${count > names.length ? `and ${count - names.length} more` : ''}</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-size:13px;color:var(--muted)">Add a customer by hand:</span><select id="ncAdd"><option value="">Choose customer</option>${others.map(x => `<option>${x}</option>`).join('')}</select></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px"><button class="btn primary" data-nccreate="1">Create campaign</button><button class="btn" data-nccancel="1">Cancel</button></div>
+  </div>`);
+}
+function createCampaign() {
+  const n = state.nc, { t, names, count } = ncList(), type = n.type || 'Promo';
+  const st = n.start || '2026-10-26', en = n.end || '2026-11-15', a = Date.parse(st + 'T00:00:00Z'), b = Date.parse(en + 'T00:00:00Z'), day = 864e5;
+  const status = TODAY < a ? 'Upcoming' : TODAY > b ? 'Ended' : 'Active';
+  const note = status === 'Upcoming' ? `Starts in ${Math.round((a - TODAY) / day)} days` : status === 'Ended' ? 'Ended ' + fmtDate(en) : `${Math.round((b - TODAY) / day)} days left`;
+  const name = (n.name || '').trim() || (type === 'Promo' ? 'New promo' : 'New loyalty reward');
+  campaigns.push([name, type, t[0], fmtDate(st), fmtDate(en), status, note, count, 0, 0, 0, 0, status === 'Active' ? (TODAY - a) / (b - a) : 0]);
+  const goal = (n.goal || '').trim() || `Bring back ${Math.round(count / 3)} customers`, num = parseInt(goal.replace(/[^0-9]/g, ''), 10) || Math.round(count / 3);
+  reasons.push([(n.reason || '').trim() || 'No reason written yet.', 'Dashboard · ' + (n.based || graphs[5]), goal, num, 0, 'Mark Villanueva (Admin) · Oct 21']);
+  names.forEach(x => { if (!custCamp[x]) custCamp[x] = [name, status === 'Upcoming' ? 'starts ' + fmtDate(st) : 'ends ' + fmtDate(en), type]; });
+  state.camp = campaigns.length - 1; state.newCamp = false; state.nc = {};
+  return [name, count];
+}
+
+// ---------- render ----------
+function visibleMenu() {
+  if (state.role === 'Super Admin') return MASTER.map(n => ({ n, locked: false, group: 'Platform' }));
+  const plan = PLAN[state.lab];
+  return FEATURES.filter(([n]) => ROLE_CAN[state.role].includes(n)).map(([n, need, group]) => ({ n, need, group, locked: rank[need] > rank[plan] }));
+}
+function render() {
+  try { localStorage.setItem('xpera-walk', JSON.stringify(state)); } catch (e) {}
+  if (state.role === 'Super Admin' && state.lab !== 3) state.role = 'Admin';
+  // controls
+  document.querySelectorAll('#labSeg button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.lab === state.lab)));
+  document.querySelectorAll('#roleSeg button').forEach(b => { b.setAttribute('aria-pressed', String(b.dataset.role === state.role)); b.disabled = b.dataset.role === 'Super Admin' && state.lab !== 3; });
+  if (state.role === 'Super Admin' && state.lab !== 3) state.role = 'Admin';
+  const menu = visibleMenu();
+  if (!menu.find(m => m.n === state.screen && !m.locked)) state.screen = (menu.find(m => !m.locked) || {}).n;
+  // note
+  const [t, items] = LAB_NOTES[state.lab]; $('noteTitle').textContent = t;
+  $('noteList').innerHTML = items.map(i => `<li>${i}</li>`).join('');
+  const plan = PLAN[state.lab], lockedCount = menu.filter(m => m.locked).length;
+  $('noteWhy').innerHTML = state.role === 'Super Admin'
+    ? `<b>You are the Super Admin.</b> You are in the Master, with its own database (<code>xpera_master</code>). You manage stores and their plans, but you don't work inside a store.`
+    : `<b>Why this menu?</b> Gaming Hub is on <b>Plan ${plan}</b> and you're signed in as <b>${state.role}</b>. The role hides what this user doesn't do${lockedCount ? `, and the plan locks ${lockedCount} feature${lockedCount > 1 ? 's' : ''} (shown with a plan tag)` : ''}. The app connects to <code>gaminghub_db</code>.`;
+  // sidebar
+  $('nav').innerHTML = menu.map((m, i) => `${i === 0 || menu[i - 1].group !== m.group ? `<div class="grp">${m.group}</div>` : ''}<button type="button" id="nav-${m.n}" ${m.locked ? `class="locked" title="Unlocks on Plan ${m.need}"` : ''} ${m.n === state.screen ? 'aria-current="page"' : ''} data-screen="${m.n}" data-locked="${m.locked}"><span>${m.n}</span>${m.locked ? `<span class="lk">Plan ${m.need}</span>` : ''}</button>`).join('');
+  $('store').innerHTML = state.role === 'Super Admin' ? `<b>xpera Master</b><span>Super Admin</span><span class="planchip">Platform owner</span>` : `<b>Gaming Hub</b><span>${state.role}${state.lab === 3 ? ' · ' + (state.role === 'Admin' ? 'All branches' : 'Cebu branch') : ''}</span><span class="planchip">Tenant ${plan} · ${{ A: 'Micro', B: 'Small', C: 'Medium' }[plan]}</span>`;
+  // main
+  const fn = S[state.screen];
+  if (!fn) { $('main').innerHTML = `<div class="empty"><b>Nothing to show</b><span>This user has no screens on this plan.</span></div>`; return; }
+  const [title, sub, actions, body] = fn();
+  const db = state.role === 'Super Admin' ? 'xpera_master' : 'gaminghub_db';
+  const branchCtl = state.lab === 3 && state.role === 'Admin' && ['Dashboard', 'Customers'].includes(state.screen) ? `<label class="branchsel" for="branch">Branch <select id="branch">${['All branches', 'Cebu', 'Davao', 'Iloilo'].map(b => `<option ${b === state.branch ? 'selected' : ''}>${b}</option>`).join('')}</select></label>` : '';
+  const here = menu.find(m => m.n === state.screen) || {}, place = state.role === 'Super Admin' ? 'xpera Master' : 'Gaming Hub';
+  const crumbs = `<nav class="crumbs" aria-label="You are here"><span>${place}</span><i>›</i><span>${here.group || ''}</span><i>›</i><b>${title}</b></nav>`;
+  $('main').innerHTML = `<div class="top"><div>${crumbs}<h3>${title}</h3><p>${sub}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${branchCtl}<span class="db">${dbIcon}${db}</span>${actions}</div></div>${body}`;
+}
+
+// ---------- events ----------
+$('labSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.lab = +b.dataset.lab; if (state.lab !== 3) state.branch = 'All branches'; render(); });
+$('roleSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return; state.role = b.dataset.role; state.screen = ''; render(); });
+$('nav').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.locked === 'true') { toast(`${b.dataset.screen} unlocks when the store upgrades to Plan ${b.title.slice(-1)}`); return; } state.screen = b.dataset.screen; render(); });
+$('main').addEventListener('click', e => {
+  const q = e.target.closest('[data-qty]'); if (q) { const l = state.cart[+q.dataset.qty]; l.q += +q.dataset.d; if (l.q < 1) state.cart.splice(+q.dataset.qty, 1); render(); return; }
+  const rm = e.target.closest('[data-rm]'); if (rm) { state.cart.splice(+rm.dataset.rm, 1); render(); return; }
+  const py = e.target.closest('[data-pay]'); if (py) { state.coPay = py.dataset.pay; render(); return; }
+  const st = e.target.closest('[data-stab]'); if (st) { state.salesTab = st.dataset.stab; state.salesPage = 0; render(); return; }
+  const pgb = e.target.closest('[data-pg]'); if (pgb && !pgb.disabled) { state.pg = state.pg || {}; state.pg[pgb.dataset.pg] = +pgb.dataset.to; render(); document.querySelector(`[data-pg="${pgb.dataset.pg}"][aria-current="page"]`)?.closest('.card')?.scrollIntoView({ block: 'nearest' }); return; }
+  if (e.target.closest('[data-cocancel]')) { state.cart = []; state.applied = false; state.coPay = 'Cash'; render(); toast('Sale cleared'); return; }
+  if (e.target.closest('[data-cosave]')) { if (!state.cart.length) { toast('Add a product first'); return; }
+    const price = n => (products.find(x => x[0] === n) || [0, 0, 0])[2], sub = state.cart.reduce((t, l) => t + price(l.n) * l.q, 0), promo = state.lab >= 2 && state.applied ? custPromo[state.coCust] : null, total = sub - (promo ? Math.min(sub, promo[2] * sub + promo[3]) : 0), amt = '₱' + Math.round(total).toLocaleString('en-US');
+    sales.unshift(['OR-000' + nextOR++, 'Oct 21', state.coCust, state.cart.map(l => (l.q > 1 ? l.q + ' × ' : '') + l.n).join(', '), state.coPay, amt, promo ? promo[0].split(':')[0] : '—']);
+    if (state.coPay === 'Credit') balances.unshift([state.coCust, amt, new Date(state.coDue + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), 'On track']);
+    const who = state.coCust, pay = state.coPay; state.cart = []; state.applied = false; state.coPay = 'Cash'; render(); toast(`Sale saved under ${who}${pay === 'Credit' ? '. Balance added to Payments' : ''}${promo ? '. Linked to the campaign' : ''}`); return; }
+  if (e.target.closest('[data-apply]')) { state.applied = true; render(); toast('Reward applied. When saved, this sale is linked to the campaign.'); return; } const fo = e.target.closest('[data-fu]'); if (fo) { state.fuOpen = fo.dataset.fu; state.fuMethod = 'Call'; render(); $('main').querySelector('.card .seg')?.scrollIntoView({ block: 'center' }); return; }
+  const fm = e.target.closest('[data-method]'); if (fm) { state.fuMethod = fm.dataset.method; render(); return; }
+  if (e.target.closest('[data-fucancel]')) { state.fuOpen = ''; render(); return; }
+  if (e.target.closest('[data-fusave]')) { const n = state.fuOpen, r = $('fuResult').value; state.fuDone[n] = { method: state.fuMethod, result: r, note: $('fuNote').value.trim(), by: state.role === 'Admin' ? 'Mark Villanueva' : 'Ben Torres' }; state.fuOpen = ''; render(); toast(`Saved: ${n} · ${state.fuDone[n].method} · ${r}`); return; }
+  const g = e.target.closest('[data-goto]'); if (g) { state.screen = 'Retention'; state.newCamp = true; state.nc = { reason: 'At-risk customers went up from 31 to 47 since August', based: graphs[5], target: 0 }; render(); toast('New campaign: the reason is filled in from Graph 6'); return; }
+  if (e.target.closest('[data-newcamp]')) { state.newCamp = true; state.nc = {}; render(); return; }
+  if (e.target.closest('[data-nccancel]')) { state.newCamp = false; state.nc = {}; render(); return; }
+  const nt = e.target.closest('[data-nctype]'); if (nt) { state.nc.type = nt.dataset.nctype; render(); return; }
+  const nr = e.target.closest('[data-ncrm]'); if (nr) { const x = nr.dataset.ncrm, n = state.nc; if ((n.extra || []).includes(x)) n.extra = n.extra.filter(y => y !== x); else n.removed = (n.removed || []).concat([x]); render(); return; }
+  if (e.target.closest('[data-nccreate]')) { const [nm, c] = createCampaign(); render(); toast(`Created “${nm}”. ${c} customers now have it under their name.`); return; } const k = e.target.closest('[data-camp]'); if (k) { state.camp = +k.dataset.camp; render(); return; } const b = e.target.closest('[data-act]'); if (b) toast(b.dataset.act + ' (preview only)'); });
+$('main').addEventListener('input', e => {
+  if (e.target.id && e.target.id.startsWith('q-')) { const k = e.target.id.slice(2), pos = e.target.selectionStart; state.q = state.q || {}; state.pg = state.pg || {}; state.q[k] = e.target.value; state.pg[k] = 0; render(); const box = $(e.target.id); if (box) { box.focus(); box.setSelectionRange(pos, pos); } return; } if (e.target.dataset && e.target.dataset.nc) state.nc[e.target.dataset.nc] = e.target.value; });
+$('main').addEventListener('change', e => {
+  if (e.target.id === 'branch') { state.branch = e.target.value; render(); }
+  else if (e.target.id === 'target') { state.nc.target = +e.target.value; state.nc.removed = []; render(); }
+  else if (e.target.id === 'ncAdd' && e.target.value) { const x = e.target.value, n = state.nc; n.removed = (n.removed || []).filter(y => y !== x); if (!targets[n.target || 0][2].includes(x)) n.extra = (n.extra || []).concat([x]); render(); }
+  else if (e.target.dataset && e.target.dataset.nc) state.nc[e.target.dataset.nc] = e.target.value;
+  else if (e.target.id === 'coProd' && e.target.value) { const l = state.cart.find(x => x.n === e.target.value); if (l) l.q++; else state.cart.push({ n: e.target.value, q: 1 }); render(); }
+  else if (e.target.id && e.target.id.startsWith('avail-')) { const x = products[+e.target.id.slice(6)]; x[3] = e.target.value === 'Available'; const w = inquiries.filter(q => q[3] === x[0] && q[4] === 'Waiting for product').length; render(); toast(x[3] && w ? `${x[0]} is back. ${w} customer${w > 1 ? 's are' : ' is'} waiting: see Inquiries` : `${x[0]}: ${e.target.value}`); }
+  else if (e.target.id && e.target.id.startsWith('inq-')) { inquiries[+e.target.id.slice(4)][4] = e.target.value; render(); }
+  else if (e.target.id && e.target.id.startsWith('cmp-')) { complaints[+e.target.id.slice(4)][4] = e.target.value; render(); }
+  else if (e.target.id === 'coDue') { state.coDue = e.target.value || state.coDue; render(); }
+  else if (e.target.id === 'coCust') { state.coCust = e.target.value; state.applied = false; render(); }
+  else if (e.target.id && e.target.id.startsWith('plan-')) toast(`${e.target.dataset.store} moved to Plan ${e.target.value}: its menu changes on next sign-in`);
+  else if (e.target.id && e.target.id.startsWith('act-')) toast(`Result recorded: ${e.target.value}. The tracking numbers update.`);
+});
+render();
+</script>

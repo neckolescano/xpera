@@ -1,0 +1,10 @@
+{
+  "ConnectionStrings": {
+    "CloudMaster": "Server=db77928.public.databaseasp.net; Database=db77928; User Id=db77928; Password=********; Encrypt=True; TrustServerCertificate=True;"
+  },
+  "TenantCredentials": {
+    "CloudTenantA": { "UserId": "db79610", "Password": "********" },
+    "CloudTenantB": { "UserId": "db79617", "Password": "********" },
+    "CloudTenantC": { "UserId": "db79621", "Password": "********" }
+  }
+}
