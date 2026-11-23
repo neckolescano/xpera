@@ -7,6 +7,9 @@ namespace Xpera.Screens
     {
         private readonly PagedList _list;
 
+        // UC-02: Staff only updates availability; the Admin manages the list (add, edit, delete).
+        private static bool IsAdmin => (Session.Role ?? "Admin") == "Admin";
+
         public ProductsScreen()
         {
             InitializeComponent();
@@ -14,7 +17,10 @@ namespace Xpera.Screens
             Ui.StylePrimary(addButton);
             Ui.MakeDropdown(grid, "availabilityColumn", Choices.Availability, AvailabilityChanged);
             _list = new PagedList(grid, pager, countLabel, "products", RowsWithStats);
-            Ui.AddRowActions(grid, id => new (string, Action)[] { ("Edit product", () => EditProduct(id)), ("Delete", () => DeleteProduct(id)) });
+            if (IsAdmin)
+                Ui.AddRowActions(grid, id => new (string, Action)[] { ("Edit product", () => EditProduct(id)), ("Delete", () => DeleteProduct(id)) });
+            else
+                grid.Columns["actionsColumn"].Visible = false;
             Load += (sender, e) => _list.Refresh();
             VisibleChanged += (sender, e) => { if (Visible) _list.Refresh(); };
         }
@@ -22,7 +28,7 @@ namespace Xpera.Screens
         // The + Add button goes in the header, on the right of the title.
         public Control[] HeaderActions()
         {
-            return new Control[] { addButton };
+            return IsAdmin ? new Control[] { addButton } : new Control[0];
         }
 
         // The list asks for its rows each time it refreshes, so the tiles stay up to date too.
